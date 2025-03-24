@@ -1,3 +1,24 @@
 \subsection{Accompaniment Generation}
+\label{sec:accompaniment_generation}
 
-Like many human composers, the accompaniment generation process follows a rule-based approach. It uses the extracted melody and generated chord progression as context to generate different parts for each instrument, which is similar to the concept of lead sheets in Jazz performance. Unlike with the Jazz musician analogy, the different parts cannot `hear' each other during the generation process, as they are independent from each other. In particular, the accompaniment generation phase ...
+Like many human composers, the accompaniment generation process follows a rule-based approach. With the melody and chord progression from Steps \ref{sec:melody_extraction} and \ref{sec:chord_generation} respectively as context, it generates different parts for each instrument using the appropriate algorithm (that we defined). This is similar to how a Jazz musician, who is familiar with the conventions of the genre, can use lead sheets\footnote{A minimalist type of music notation that contains the melody and chord changes in a song.} as context to determine what to play in an ensemble. Unlike with this analogy, the different parts cannot `hear' each other during the generation process, as they are independent from each other. The main advantage of the independent generation approach is its simplicity; however, it does not allow for individual parts to influence each other (with the exception of the melody, which can influence all parts), which can result in robotic-sounding parts.
+
+\subsubsection{Voice Generation}
+
+Generating the melody is trivial: we use the extracted melody from Step \ref{sec:melody_extraction}. To generate the vocal harmony line, we use the following algorithm:
+\begin{quote}
+    Let $S$ be the set of all notes in the C major scale as MIDI pitches. Let $M = m_0, \ldots, m_n$ and $H = h_0, \ldots, h_n$ be two sequences of MIDI pitches, where $m_i$ and $h_i$ correspond to the $i$th note in the melody and vocal harmony line, respectively. Compute $H$ as follows:
+    $$h_i = \begin{cases}
+        m_i - 3 & \text{if }m_i - 3 \in S \\
+        m_i - 4 & \text{if }m_i - 4 \in S \\
+    \end{cases}$$
+\end{quote}
+This harmonizes the melody in thirds, the same technique applied to most of the vocal harmony in ``Piranha Plants as Parade''. This algorithm works well for most inputs, however there is an edge case when the current chord conflicts with the scale. Because the vocal harmony line is low in volume, the occasional `error' does not overly stand out.
+
+\subsubsection{Piano Generation}
+
+[piano generation]
+
+\subsubsection{Percussion Generation}
+
+The percussion generation algorithm is very simple: the generated snare drum part outlines a gallop rhythm\footnote{A repeating pattern of an 8th note followed by two 16th notes.}, whereas the bass drum plays on the first beat of every measure. ``Piranha Plants as Parade'' mostly follows this pattern, and since percussion generation was not in our MVP, this simplified process suffices for our proof-of-concept.
