@@ -1,13 +1,15 @@
 \subsection{Accompaniment Generation}
 \label{sec:accompaniment_generation}
 
-Like many human composers, the accompaniment generation process follows a rule-based approach. With the melody and chord progression from Steps \ref{sec:melody_extraction} and \ref{sec:chord_generation} respectively as context, it generates different parts for each instrument using the appropriate algorithm (that we defined). This is similar to how a Jazz musician, who is familiar with the conventions of the genre, can use lead sheets\footnote{A minimalist type of music notation that contains the melody and chord changes in a song.} as context to determine what to play in an ensemble. Unlike with this analogy, the different parts cannot `hear' each other during the generation process, as they are independent from each other. The main advantage of the independent generation approach is its simplicity; however, it does not allow for individual parts to influence each other (with the exception of the melody, which can influence all parts), which can result in robotic-sounding parts.
+Like many human composers, our accompaniment generation process follows a rule-based approach. With the melody and chord progression from Parts \ref{sec:melody_extraction} and \ref{sec:chord_generation} respectively as context, it generates different parts for each instrument using the appropriate algorithm (that we defined). This is similar to how a Jazz musician, who is familiar with the conventions of the genre, can use lead sheets\footnote{A minimalist type of music notation that contains the melody and chord changes in a song.} as context to determine what to play in an ensemble. Unlike in this analogy, the different parts cannot `hear' each other during the generation process, as they are independent from each other. The main advantage of the independent generation approach is its simplicity; however, it does not allow for individual parts to influence each other (with the exception of the melody, which can influence all parts), which can result in robotic-sounding parts.
 
 \subsubsection{Voice Generation}
 
 Generating the melody is trivial: we use the extracted melody from Step \ref{sec:melody_extraction}. To generate the vocal harmony line, we use the following algorithm:
 \begin{quote}
-    Let $S$ be the set of all notes in the C major scale as MIDI pitches. Let $M = m_0, \ldots, m_n$ and $H = h_0, \ldots, h_n$ be two sequences of MIDI pitches, where $m_i$ and $h_i$ correspond to the $i$th note in the melody and vocal harmony line, respectively. Compute $H$ as follows:
+    Let $S$ be the set of all MIDI pitches in the C major scale.
+    Let $M = m_0, \ldots, m_n$ and $H = h_0, \ldots, h_n$ be two sequences of MIDI pitches, where $m_i$ and $h_i$ correspond to the $i$th note in the melody and vocal harmony line, respectively.
+    Compute $H$ as follows:
     $$h_i = \begin{cases}
         m_i - 3 & \text{if }m_i - 3 \in S \\
         m_i - 4 & \text{if }m_i - 4 \in S \\
@@ -17,8 +19,28 @@ This harmonizes the melody in thirds, the same technique applied to most of the 
 
 \subsubsection{Piano Generation}
 
-[piano generation]
+This is the most complicated part of the accompaniment generation process. We want to emulate the style of stride piano, which involves playing alternating eighth notes from the bassline and the chord voicings. This clear separation of parts allows us to handle the bassline and chord voicings in two separate processes.
+
+Our bassline generation algorithm is very simple. We alternate between the root pitch of the chord and a perfect fourth (five semitones) below said root pitch, restarting whenever the chord changes.
+
+The chord voicing algorithm is more complex. There are two types of chords we need to support: major (Type 1) chords and secondary dominant 7 (Type 2) chords. It is guaranteed that a Type 1 chord will always follow a Type 2 chord. First, we voice all Type 1 chords with the following algorithm:
+\begin{quote}
+    Let $t$ be some arbitrary MIDI pitch.
+    Let $C = \left\{ c_0, c_1, c_2 \right\}$ be the set of MIDI pitches of the chord we want to voice.
+    Let $V = \left\{ v_1, v_1, v_2 \right\}$ be the set of MIDI pitches in our voiced chord.
+    Compute $V$ as follows:
+    $$v_i = c_i + 12 \left( \arg\min_{j} \left\vert c_i + 12j - t \right\vert \right)$$
+\end{quote}
+This step clumps each note in the chord around some abritrary pitch, which smoothens chord transitions. Next, we voice all Type 2 chords with the following algorithm, which is based on voice-leading rules in Western music theory:
+\begin{quote}
+    Let $M = \{ m_0, m_1, m_2\}$ be the voicing of the Type 1 chord following the chord we want to voice. By the definition of a major chord, we can uniquely assign the elements of $M$ such that:
+    \begin{align*}
+        m_1 - m_0 &\equiv 4 \mod 12 \\
+        m_2 - m_0 &\equiv 7 \mod 12
+    \end{align*}
+    Let $V = \left\{ m_0 - 1, m_1 + 1, m_2 \right\}$ be the MIDI pitches in our computed voicing.
+\end{quote}
 
 \subsubsection{Percussion Generation}
 
-The percussion generation algorithm is very simple: the generated snare drum part outlines a gallop rhythm\footnote{A repeating pattern of an 8th note followed by two 16th notes.}, whereas the bass drum plays on the first beat of every measure. ``Piranha Plants as Parade'' mostly follows this pattern, and since percussion generation was not in our MVP, this simplified process suffices for our proof-of-concept.
+The percussion generation algorithm is very simple: the generated snare drum part outlines a gallop rhythm\footnote{A repeating pattern of an eighth note followed by two sixteenth notes.}, whereas the bass drum plays on the first beat of every measure. ``Piranha Plants as Parade'' mostly follows this pattern, and since percussion generation was not in our MVP, this simplified process suffices for our proof-of-concept.
