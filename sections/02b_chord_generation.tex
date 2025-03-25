@@ -1,4 +1,61 @@
 \subsection{Chord Generation}
 \label{sec:chord_generation}
 
-[chord generation]
+After extracting the melody, the next step in Piranha Plants as Charade is to generate chords that harmonize with the melody. The problem of selecting chords that "sound good" with a melody is generally quite open-ended and subjective. For any given melody, there are many different sequences of chords that could harmonize with it, evoking different emotions and styles.To narrow down the scope, our MVP implementation focuses on generating chords adhering with the style of Piranha Plants.
+
+The chord generation component produces a sequence of chords, each defined by a root note and a chord quality. For example, a C major chord has a root note of C and a chord quality of major. In order to determine the "best" sequence, we model this problem using the Hidden Markov Model (HMM) framework.
+
+The Hidden Markov Model \autocite{HMM:2023}, depicted in Figure \ref{fig:hmm}, is a statistical model that describes a sequence of hidden states, each of which emits an observation. In the context of chord generation, we model the hidden states as the sequence of chords and the observations as a function of the melody. The HMM framework allows us to model the probability of a chord sequence given a melody, which we can then use to generate the most likely or most favorable sequence of chords.
+
+The model consists of the following components for time step $t \geq 0$:
+\begin{itemize}
+    \item \textbf{States} $s_t$: The hidden states of the model, which represent the sequence of chords.
+    \item \textbf{Observations} $o_t$: The observations of the model, which represent the melody.
+    \item \textbf{Initial State Probabilities (Priors)} $P(s_0)$: The probabilities of starting in a particular state.
+    \item \textbf{Transition Probabilities} $P(s_{t+1} | s_t)$: The probabilities of transitioning between states.
+    \item \textbf{Observation Probabilities} $P(o_t | s_t)$: The probabilities of emitting an observation given a state.
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[->, >=stealth, node distance=1cm, auto, scale=1, transform shape]
+        % Hidden states
+        \node[draw, circle] (s0) {$s_0$};
+        \node[draw, circle, right=of s0] (s1) {$s_1$};
+        \node[draw, circle, right=of s1] (s2) {$s_2$};
+        \node[right=0.5cm of s2] (dots) {\Large $\dots$};
+        \node[draw, circle, right=0.3cm of dots] (st) {$s_t$};
+        
+        % Observation states
+        \node[draw, circle, below=of s1] (o1) {$o_1$};
+        \node[draw, circle, below=of s2] (o2) {$o_2$};
+        \node[draw, circle, below=of st] (ot) {$o_t$};
+        
+        % Hidden state transitions
+        \draw[->] (s0) -- (s1);
+        \draw[->] (s1) -- (s2);
+        \draw[->] (s2) -- (dots);
+        \draw[->] (dots) -- (st);
+        
+        % Observation emissions
+        \draw[->] (s1) -- (o1);
+        \draw[->] (s2) -- (o2);
+        \draw[->] (st) -- (ot);
+    \end{tikzpicture}
+    \caption{Hidden Markov Model for chord generation.}
+    \label{fig:hmm}
+\end{figure}
+
+In the most basic case, states and observations can be mapped to integer indices such that the transition and observation probabilities can be represented as matrices. The model can then be solved using the Viterbi algorithm, which is a dynamic programming algorithm that finds the most likely sequence of hidden states given the observations.
+
+For this project, we found it easier to implement the transition and observation probabilities as scores instead to better capture the subjective process of selecting chords. The transition scores represent the favorability of transitioning between two chords, while the observation scores represent the favorability of a chord given the melody.
+
+\subsubsection{Transition Scores}
+
+To define the transitions, we started by restricting the valid states to only a small set of chords that appear in ``Piranha Plants on Parade'': I, IV, and V of the key; and their respective V7 chords. Thus, each of these chords can transition to each other with a constant score.
+
+Another rule we implemented is that the V7 chord must resolve to the I chord. This is a common resolution in music theory, and it is used in ``Piranha Plants on Parade''. We assigned a higher score to this transition to ensure that the model would favor this resolution.
+
+\subsubsection{Observation Scores}
+
+The observation scores are based on the melody. We calculate the score of a melody given a chord by summing the number of notes in the melody that are in the chord. This is a simple heuristic that favors chords that contain more notes from the melody, which is generally a good rule of thumb for harmonization. Although this doesn't fully account for deviations such as passing tones, it provides a good starting point for the model.
