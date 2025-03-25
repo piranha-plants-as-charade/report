@@ -1,9 +1,9 @@
 \subsection{Chord Generation}
 \label{sec:chord_generation}
 
-After extracting the melody, the next step in Piranha Plants as Charade is to generate chords that harmonize with the melody. The problem of selecting chords that "sound good" with a melody is generally quite open-ended and subjective. For any given melody, there are many different sequences of chords that could harmonize with it, evoking different emotions and styles.To narrow down the scope, our MVP implementation focuses on generating chords adhering with the style of Piranha Plants.
+After extracting the melody, the next step in Piranha Plants as Charade is to generate chords that harmonize with the melody. The problem of selecting chords that ``sound good'' with a melody is generally quite open-ended and subjective. For any given melody, there are many different sequences of chords that could harmonize with it, evoking different emotions and styles.To narrow down the scope, our MVP implementation focuses on generating chords adhering with the style of Piranha Plants.
 
-The chord generation component produces a sequence of chords, each defined by a root note and a chord quality. For example, a C major chord has a root note of C and a chord quality of major. In order to determine the "best" sequence, we model this problem using the Hidden Markov Model (HMM) framework.
+The chord generation component produces a sequence of chords, each defined by a root note and a chord quality. For example, a C major chord has a root note of C and a chord quality of major. In order to determine the ``best'' sequence, we model this problem using the Hidden Markov Model (HMM) framework.
 
 The Hidden Markov Model \autocite{HMM:2023}, depicted in Figure \ref{fig:hmm}, is a statistical model that describes a sequence of hidden states, each of which emits an observation. In the context of chord generation, we model the hidden states as the sequence of chords and the observations as a function of the melody. The HMM framework allows us to model the probability of a chord sequence given a melody, which we can then use to generate the most likely or most favorable sequence of chords.
 
