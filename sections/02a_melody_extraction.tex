@@ -39,7 +39,7 @@ While this method yielded better results, it still showed some limitations in ha
 
 We ultimately decided to use the PYIN algorithm \autocite{PYIN:2014} due to both its robustness with real audio and its readily available implementation in the LibROSA library \footnote{\href{https://librosa.org/doc/0.11.0/generated/librosa.pyin.html}{librosa.org/doc/0.11.0/generated/librosa.pyin.html}}, which allowed us to focus on the higher-level aspects of our project. PYIN is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to handle audio more robustly. At a high level, PYIN applies autocorrelation to detect pitch candidates and refines the result using a probabilistic thresholding model to filter out spurious frequencies.
 
-After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in Hertz across time. We then apply multiple pitch shifts by a few cents \footnote{Cents: a logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI semitone.
+After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in Hertz across time. We then apply multiple pitch shifts by a few cents \footnote{A logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI semitone.
 
 \subsubsection{Note Segmentation}
 
