@@ -1,0 +1,88 @@
+\tikzstyle{startstop} = [
+    rectangle, rounded corners,
+    text centered,
+    text width=1.75cm,
+    inner sep=0.2cm,
+    draw=black,
+    fill=gray!20
+]
+
+\tikzstyle{io} = [
+    trapezium, 
+    % trapezium stretches=true, % A later addition
+    trapezium left angle=70, 
+    trapezium right angle=110, 
+    text width=1.75cm, 
+    inner sep=0.2cm,
+    text centered, 
+    draw=black,
+    fill=gray!20
+]
+
+\tikzstyle{process} = [
+    rectangle, 
+    text centered, 
+    text width=1.75cm,
+    inner sep=0.2cm,
+    draw=black, 
+]
+
+\tikzstyle{arrow} = [
+    thick,->,>=stealth,
+    text centered
+]
+
+
+\begin{figure*}
+    \begin{center}
+        \begin{tikzpicture}[node distance=1.5cm]
+
+            \node (input) [startstop] {Input};
+            \node (hpss) [process, below = of input] {HPSS};
+            \node (onset) [process, below = of hpss, xshift=1.75cm] {Onset detection};
+            \node (pyin) [process, below = of hpss, xshift=-1.75cm, yshift=-0.25cm] {PYIN};
+            \node (melody) [process, below = of onset, xshift=-1.75cm] {Build melody};
+            
+            \draw [arrow] (input) -- node[anchor=center, fill=white]{signal} (hpss);
+            \draw [arrow] (hpss) -| node[anchor=center, fill=white, yshift=-1cm, text width=2cm]{percussive component} (onset);
+            \draw [arrow] (hpss) -| node[anchor=center, fill=white, yshift=-1cm, text width=2cm]{harmonic component} (pyin);
+            \draw [arrow] (pyin) |- node[anchor=center, fill=white, yshift=1.25cm]{pitches} (melody);
+            \draw [arrow] (onset) -- ($(onset.south) - (0, 0.75cm)$) node[anchor=center, fill=white, xshift=-0.85cm]{onsets} -| (melody);
+
+            \node (viterbi) [process, right = of input, xshift=1.875cm, yshift=-0.5cm] {Viterbi};
+
+            \node (melody_ctx) [right = of melody, xshift=0.25cm] {melody};
+
+            \draw [arrow] (melody) -- (melody_ctx) |- (viterbi);
+
+            \node (percussion) [process, below = of viterbi, yshift=0.5cm] {Percussion generation};
+            \node (piano) [process, below = of percussion, yshift=-1.25cm] {Piano generation};
+            \node (vocal) [process, below = of piano] {Vocal generation};
+            \node (harmony_ctx) [right = of viterbi, xshift=-2.25cm, yshift=-0.9cm] {chord progression};
+
+            \draw [arrow] (viterbi) -| (harmony_ctx) |- (percussion);
+            \draw [arrow] (harmony_ctx) |- (piano);
+            \draw [arrow] (harmony_ctx) |- (vocal);
+            \draw [arrow] (melody_ctx) |- (percussion);
+            \draw [arrow] (melody_ctx) |- (piano);
+            \draw [arrow] (melody_ctx) |- (vocal);
+
+            \node (sample_data) [io, below = of melody, yshift=1cm] {Sample library};
+
+            \node (midi) [process, right = of percussion, yshift=-2.25cm] {MIDI-based export};
+            \node (sample) [process, right = of vocal, yshift=1.5cm] {Sample-based export};
+            \node (output) [startstop, right = of input, xshift=6.6cm] {Output};
+            \node (export_combined) [below = of output, yshift=-0.35cm, text width=1cm, text centered] {export data};
+            
+            \draw [arrow] (sample_data) |- node[anchor=center, fill=white, xshift=3cm, text width=1.3cm]{audio samples} ($(sample.south) - (0, 1.75cm)$) -- (sample);
+            \draw [arrow, preaction={draw=white, -, line width=8pt}] (percussion) |- node[anchor=center, fill=white, text width=2cm, yshift=0.8cm]{percussion part} (midi);
+            \draw [arrow] (piano) |- node[anchor=center, fill=white, yshift=-0.6cm]{piano part} (midi);
+            \draw [arrow, preaction={draw=white, -, line width=8pt}] (vocal) |- node[anchor=center, fill=white]{vocal part} (sample);
+            \draw [arrow] (midi) |- (export_combined) -- (output);
+            \draw [arrow] (sample) -- ($(sample.east) - (-1cm, 0)$) |- (export_combined) -- (output);
+            
+        \end{tikzpicture}
+    \end{center}
+    \caption{A flowchart describing the system architecture for Piranha Plants as Charade.}
+    \label{fig:architecture}
+\end{figure*}
