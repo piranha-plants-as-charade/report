@@ -1,5 +1,5 @@
 \tikzstyle{startstop} = [
-    rectangle, rounded corners,
+    rectangle, rounded corners = 0.58cm,
     text centered,
     text width=1.75cm,
     inner sep=0.2cm,
@@ -15,6 +15,16 @@
     text width=1.75cm, 
     inner sep=0.2cm,
     text centered, 
+    draw=black,
+    fill=gray!20
+]
+
+\tikzstyle{document} = [
+    tape,
+    tape bend top=none,
+    text centered,
+    text width=1.75cm,
+    inner sep=0.2cm,
     draw=black,
     fill=gray!20
 ]
@@ -35,13 +45,13 @@
 
 \begin{tikzpicture}[node distance=1.5cm]
 
-    \node (input) [startstop] {Input};
+    \node (input) [startstop] {Input melody};
     \node (hpss) [process, below = of input] {HPSS};
     \node (onset) [process, below = of hpss, xshift=1.75cm, yshift=-0.25cm] {Onset detection};
     \node (pyin) [process, below = of hpss, xshift=-1.75cm, yshift=-0.5cm] {PYIN};
     \node (melody) [process, below = of onset, xshift=-1.75cm] {Melody builder};
     
-    \draw [arrow] (input) -- node[anchor=center, fill=white, yshift=0.125cm]{signal} (hpss);
+    \draw [arrow] (input) -- node[anchor=center, fill=white, yshift=0.125cm]{digital signal} (hpss);
     \draw [arrow] (hpss) -| node[anchor=center, fill=white, yshift=-1.1cm, text width=2cm]{percussive component} (onset);
     \draw [arrow] (hpss) -| node[anchor=center, fill=white, yshift=-1.25cm, text width=2cm]{harmonic component} (pyin);
     \draw [arrow] (pyin) |- node[anchor=center, fill=white, yshift=1.25cm]{pitches} (melody);
@@ -53,9 +63,9 @@
 
     \draw [arrow] (melody) -- (melody_ctx) |- (viterbi);
 
-    \node (percussion) [process, below = of viterbi] {Percussion generation};
-    \node (piano) [process, below = of percussion] {Piano generation};
-    \node (voice) [process, below = of piano] {Voice generation};
+    \node (percussion) [process, below = of viterbi] {Percussion generator};
+    \node (piano) [process, below = of percussion] {Piano generator};
+    \node (voice) [process, below = of piano] {Voice generator};
     \node (harmony_ctx) [right = of viterbi, xshift=-2cm, yshift=-1.1cm] {chord progression};
 
     \draw [arrow] (viterbi) -| (harmony_ctx) |- (percussion);
@@ -65,19 +75,21 @@
     \draw [arrow] (melody_ctx) |- (piano);
     \draw [arrow] (melody_ctx) |- (voice);
 
-    \node (sample_data) [io, below = of melody, yshift=0.5cm] {Sample library};
+    \node (sample_data) [document, below = of melody, yshift=0.75cm] {Custom sample library};
+    \node (soundfont) [document, right = of sample_data, xshift=10.75cm] {Soundfont library};
 
     \node (midi) [process, right = of percussion, xshift=2.25cm, yshift=-1.4cm] {MIDI-based export};
     \node (sample) [process, right = of voice, xshift=2.25cm, yshift=1.4cm] {Sample-based export};
-    \node (output) [startstop, right = of input, xshift=8.664cm] {Output};
-    \node (export_combined) [below = of output, yshift=0.25cm, text width=1cm, text centered] {export data};
+    \node (output) [startstop, right = of input, xshift=8.664cm] {Output song};
+    \node (export_combined) [below = of output, yshift=0.5cm, text centered] {digital signal};
     
     \draw [arrow] (sample_data) -| node[anchor=center, fill=white, xshift=-6cm]{audio samples} (sample);
-    \draw [arrow, preaction={draw=white, -, line width=12pt}] (percussion) |- node[anchor=center, fill=white, xshift=3.3cm, text width=1.7cm]{non-voice parts} (midi);
+    \draw [arrow] (soundfont) |- node[anchor=center, fill=white, yshift=-4.5cm]{soundfont} (midi);
+    \draw [arrow, preaction={draw=white, -, line width=12pt}] (percussion) |- node[anchor=center, fill=white, xshift=3.3cm, text width=2cm]{instrumental parts} (midi);
     \draw [arrow] (piano) |- (midi);
-    \draw [arrow, preaction={draw=white, -, line width=12pt}] (voice) |- node[anchor=center, fill=white, xshift=3.3cm]{voice parts} (sample);
+    \draw [arrow, preaction={draw=white, -, line width=12pt}] (voice) |- node[anchor=center, fill=white, xshift=3.3cm]{vocal parts} (sample);
     \draw [arrow] (midi) -- (export_combined) -- (output);
-    \draw [arrow] (sample) -- ($(sample.east) - (-1cm, 0)$) |- (export_combined) -- (output);
+    \draw [arrow, preaction={draw=white, -, line width=12pt}] (sample) -- ($(sample.east) - (-1.75cm, 0)$) |- (export_combined) -- (output);
     
     \draw[red] ($(hpss.north west)+(-2.05cm, 0.3cm)$) rectangle ($(melody.south east)+(2.05cm, -0.3cm)$);
     \node [fill=white, text=red, anchor=west] at ($(hpss.north west)+(-2.25cm, 0.3cm)$) {\footnotesize 1. Melody extraction};
