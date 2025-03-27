@@ -8,7 +8,7 @@ Like many human composers, our accompaniment generation process follows a rule-b
 Generating the melody is trivial: we use the extracted melody from Step \ref{sec:melody_extraction}. To generate the vocal harmony line, we use the following algorithm:
 \begin{quote}
     Let $S$ be the set of all MIDI pitches in the C major scale.
-    Let $M = m_0, \ldots, m_n$ and $H = h_0, \ldots, h_n$ be two sequences of MIDI pitches, where $m_i$ and $h_i$ correspond to the $i$th note in the melody and vocal harmony line, respectively.
+    Let $M = m_1, \ \ldots, \ m_n$ and $H = h_1, \ \ldots, \ h_n$ be two sequences of MIDI pitches, where $m_i$ and $h_i$ correspond to the $i$th note in the melody and vocal harmony line, respectively.
     Compute $H$ as follows:
     $$h_i = \begin{cases}
         m_i - 3 & \text{if }m_i - 3 \in S \\
@@ -23,22 +23,21 @@ This is the most complicated part of the accompaniment generation process. We wa
 
 Our bassline generation algorithm is very simple. We alternate between the root pitch of the chord and a perfect fourth (five semitones) below said root pitch, restarting whenever the chord changes.
 
-The chord voicing algorithm is more complex. There are two types of chords we need to support: major (Type 1) chords and secondary dominant 7 (Type 2) chords. It is guaranteed that a Type 1 chord will always follow a Type 2 chord. First, we voice all Type 1 chords with the following algorithm:
+The chord voicing algorithm is more complex. There are two types of chords we need to support: major (Type 1) chords and secondary dominant 7 (Type 2) chords. It is guaranteed that a Type 1 chord will always follow a Type 2 chord. First, we choose some arbitrary MIDI pitch $T$ and voice all Type 1 chords with the following algorithm:
 \begin{quote}
-    Let $t$ be some arbitrary MIDI pitch.
-    Let $C = \left\{ c_0, c_1, c_2 \right\}$ be the set of MIDI pitches of the chord we want to voice.
-    Let $V = \left\{ v_1, v_1, v_2 \right\}$ be the set of MIDI pitches in our voiced chord.
+    Let $C = \left\{ c_1, \ c_2, \ c_3 \right\}$ be the set of MIDI pitches of the chord we want to voice.
+    Let $V = \left\{ v_1, \ v_2, \ v_3 \right\}$ be the set of MIDI pitches in our computed voicing.
     Compute $V$ as follows:
-    $$v_i = c_i + 12 \left( \arg\min_{j} \left\vert c_i + 12j - t \right\vert \right)$$
+    $$v_i = c_i + 12 \left( \argmin_{j \in \mathbb{Z}} \left\lvert c_i + 12j - T \right\rvert \right)$$
 \end{quote}
-This step clumps each note in the chord around some abritrary pitch, which smoothens chord transitions. Next, we voice all Type 2 chords with the following algorithm, which is based on voice-leading rules in Western music theory:
+This step clumps each note in the chord around $T$, which smoothens chord transitions. Next, we voice all Type 2 chords with the following algorithm that is based on voice-leading rules in Western music theory:
 \begin{quote}
-    Let $M = \{ m_0, m_1, m_2\}$ be the voicing of the Type 1 chord following the chord we want to voice. By the definition of a major chord, we can uniquely assign the elements of $M$ such that:
+    Let $M = \{ m_1, m_2, m_3\}$ be the voicing of the Type 1 chord following the chord we want to voice. By the definition of a major chord, we can uniquely assign the elements of $M$ such that:
     \begin{align*}
-        m_1 - m_0 &\equiv 4 \mod 12 \\
-        m_2 - m_0 &\equiv 7 \mod 12
+        m_2 - m_1 &\equiv 4 \mod 12 \\
+        m_3 - m_1 &\equiv 7 \mod 12
     \end{align*}
-    Let $V = \left\{ m_0 - 1, m_1 + 1, m_2 \right\}$ be the MIDI pitches in our computed voicing.
+    Let $V = \left\{ m_1 - 1, m_2 + 1, m_3 \right\}$ be the MIDI pitches in our computed voicing.
 \end{quote}
 
 \subsubsection{Percussion Generation}

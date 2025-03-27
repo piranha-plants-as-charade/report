@@ -19,7 +19,7 @@ Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
 $$C = \text{FFT}\left(\log\left(\left|\text{FFT}\left(y\right)\right|\right)\right)$$
 
 The fundamental frequency of the signal can be found by identifying the first non-zero peak in the cepstrum:
-$$f_0 = \frac{1}{q} = \frac{1}{\left(\arg\max_{k} C[k]\right)}$$
+$$f_0 = \frac{1}{q} = \frac{1}{\left(\argmax_{k} C[k]\right)}$$
 where $q$ is a quefrency, defined as the reciprocal of frequency.
 
 However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
