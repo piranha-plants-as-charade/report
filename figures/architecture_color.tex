@@ -41,8 +41,8 @@
     \node (voice) [block, above=of piano, yshift=-0.667cm] {Voice generator};
     \node (instruments) [summing, above=of percussion, yshift=-0.75cm] {};
 
-    \node (instruments bridge) [arrow bridge, right=of instruments] {};
-    \node (voice bridge) [arrow bridge, above=of instruments bridge, yshift=0.75cm] {};
+    \node (instruments bridge) [arrow bridge, right of=instruments, xshift=0.5cm] {};
+    \node (voice bridge) [arrow bridge, right of=voice, xshift=0.5cm, yshift=-1cm] {};
 
     \node (chords ctx) [below=of instruments bridge, yshift=-1.167cm, align=center] {chord progression};
 
@@ -58,8 +58,8 @@
     \end{scope}
 
     %% AUDIO EXPORT
-    \node (sample) [block, right=of voice bridge, xshift=0.725cm] {Sample-based export};
-    \node (midi) [block, right=of instruments, xshift=2.555cm] {MIDI-based export};
+    \node (sample) [block, right of=voice bridge, xshift=1.75cm] {Sample-based export};
+    \node (midi) [block, right of=instruments bridge, xshift=1.75cm] {MIDI-based export};
     \node (export combined) [summing, below=of midi, yshift=0.625cm] {};
     \node (output) [document, below=of export combined, yshift=0.167cm] {Output song};
     \node (stop) [startstop, right=of output, xshift=-0.5cm] {Stop};
