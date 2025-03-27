@@ -1,0 +1,102 @@
+\tikzstyle{startstop}=[
+    rectangle,
+    rounded corners=0.45cm,
+    minimum height=0.9cm,
+    text centered,
+    text width=1.75cm,
+    inner sep=0.2cm,
+    draw=black,
+    fill=black!75,
+    text=white,
+]
+
+\tikzstyle{document}=[
+    tape,
+    tape bend top=none,
+    text centered,
+    text width=1.75cm,
+    inner sep=0.2cm,
+    draw=black,
+]
+
+\tikzstyle{data}=[
+    trapezium, 
+    trapezium left angle=70, 
+    trapezium right angle=110, 
+    text width=1.75cm, 
+    inner sep=0.2cm,
+    text centered, 
+    draw=black,
+]
+
+\tikzset{
+    component top center/.style 2 args={
+        rectangle,
+        rounded corners=3pt,
+        inner sep=0.3cm,
+        draw=#2,
+        label={[anchor=center, yshift=0.35cm, text=#2]north:#1},
+        fill=#2!5
+    }
+}
+\tikzset{
+    component bottom center/.style 2 args={
+        rectangle,
+        rounded corners=3pt,
+        inner sep=0.3cm,
+        draw=#2,
+        label={[anchor=center, yshift=-0.35cm, text=#2]south:#1},
+        fill=#2!5
+    }
+}
+\tikzset{
+    component bottom left/.style 2 args={
+        rectangle,
+        rounded corners=3pt,
+        inner sep=0.3cm,
+        draw=#2,
+        label={[anchor=west, yshift=-0.35cm, text=#2]south west:#1},
+        fill=#2!5
+    }
+}
+
+\tikzstyle{block}=[
+    rectangle,
+    text centered,
+    text width=1.75cm,
+    inner sep=0.2cm,
+    draw=black,
+    fill=white,
+]
+
+\tikzstyle{summing}=[
+    circle,
+    draw=black,
+    fill=white,
+    minimum size=0.5cm,
+    path picture={
+        \draw [black]
+            (path picture bounding box.135) -- (path picture bounding box.315)
+            (path picture bounding box.45) -- (path picture bounding box.225);
+    }
+]
+
+\tikzstyle{arrow}=[
+    thick,->,>=stealth,
+    text centered,
+    inner sep=0.1cm,
+]
+
+\tikzstyle{arrow text}=[
+    align=center,
+    inner sep=0.1cm,
+]
+
+\tikzstyle{arrow bridge}=[
+    fill=white,
+    minimum size=0.33cm,
+    path picture={
+        \draw[black, thick] (0.16cm, -0.5pt) arc (0:180:0.16cm);
+        \draw[black, thick] (0, 16.5cm) to (0, -16.5cm);
+    }
+]

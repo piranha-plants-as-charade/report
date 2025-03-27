@@ -1,0 +1,84 @@
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    inner sep=0,
+    outer sep=0,
+]
+    %% INPUT
+    \node (start) [startstop] {Start};
+    \node (input) [document, right=of start, xshift=-0.5cm] {Input melody};
+
+    \draw [arrow] (start) -- (input);
+
+    %% MELODY EXTRACTION
+    \node (hpss) [block, below=of input, yshift=-0.167cm] {HPSS};
+    \node (pyin) [block, below=of hpss, yshift=-0.333cm] {PYIN};
+    \node (onset) [block, left=of pyin, xshift=0.75cm] {Onset detection};
+    \node (melody builder) [block, below=of pyin, yshift=0.167cm] {Melody builder};
+    
+    \draw [arrow] (input) -- node[arrow text, pos=0.4, fill=white]{digital signal} (hpss);
+    \draw [arrow] (hpss) -| node[arrow text, pos=0.75, text width=2cm, fill=blue!5]{percussive component} (onset);
+    \draw [arrow] (hpss) -- node[arrow text, pos=0.45, text width=2cm, fill=blue!5]{harmonic component} (pyin);
+    \draw [arrow] (pyin) -- node[arrow text, pos=0.45, fill=blue!5]{pitches} (melody builder);
+    \draw [arrow] (onset) |- node[arrow text, pos=0.25, fill=blue!5]{onsets} (melody builder);
+
+    \begin{scope}[on background layer]
+        \node [component bottom left={Melody Extraction}{blue}, fit=(hpss) (onset) (pyin) (melody builder)] {};
+    \end{scope}
+
+    %% CHORD GENERATION
+    \node (melody ctx) [below=of melody builder, xshift=1.167cm, yshift=0.875cm] {melody};
+    \node (viterbi) [block, right=of melody ctx, xshift=-0.083cm] {Viterbi};
+
+    \draw [arrow] (melody builder) |- (melody ctx) -- (viterbi);
+
+    \begin{scope}[on background layer]
+        \node [component bottom center={Chord Generation}{teal}, fit=(viterbi)] {};
+    \end{scope}
+
+    %% ACCOMPANIMENT GENERATION
+    \node (percussion) [block, above=of viterbi, yshift=0.125cm] {Percussion generator};
+    \node (piano) [block, above=of percussion, yshift=0.5cm] {Piano generator};
+    \node (voice) [block, above=of piano, yshift=-0.667cm] {Voice generator};
+    \node (instruments) [summing, above=of percussion, yshift=-0.75cm] {};
+
+    \node (instruments bridge) [arrow bridge, right=of instruments] {};
+    \node (voice bridge) [arrow bridge, above=of instruments bridge, yshift=0.75cm] {};
+
+    \node (chords ctx) [below=of instruments bridge, yshift=-1.167cm, align=center] {chord progression};
+
+    \draw [arrow] (viterbi) -| (chords ctx) |- (percussion);
+    \draw [arrow] (chords ctx) -- (instruments bridge) |- (piano);
+    \draw [arrow] (chords ctx) -- (instruments bridge) -- (voice bridge) |- (voice);
+    \draw [arrow] ($(melody ctx.east) + (0.5cm, 0)$) |- (percussion);
+    \draw [arrow] ($(melody ctx.east) + (0.5cm, 0)$) |- (piano);
+    \draw [arrow] ($(melody ctx.east) + (0.5cm, 0)$) |- (voice);
+
+    \begin{scope}[on background layer]
+        \node [component top center={Accompaniment Generation}{brown}, fit=(percussion) (piano) (voice)] {};
+    \end{scope}
+
+    %% AUDIO EXPORT
+    \node (sample) [block, right=of voice bridge, xshift=0.725cm] {Sample-based export};
+    \node (midi) [block, right=of instruments, xshift=2.555cm] {MIDI-based export};
+    \node (export combined) [summing, below=of midi, yshift=0.625cm] {};
+    \node (output) [document, below=of export combined, yshift=0.167cm] {Output song};
+    \node (stop) [startstop, right=of output, xshift=-0.5cm] {Stop};
+    
+    \node (sample lib) [data, right=of sample, xshift=0.125cm] {Custom sample library};
+    \node (soundfont) [data, right=of midi, xshift=0.125cm] {Soundfont library};
+    \node (soundfont bridge) [arrow bridge, left=of soundfont, xshift=0.875cm] {};
+    
+    \draw [arrow] (sample lib) -- (sample);
+    \draw [arrow] (soundfont) -- (soundfont bridge) -- (midi);
+    \draw [arrow] (piano) -- (instruments) -- (instruments bridge) -- (midi);
+    \draw [arrow] (percussion) -- (instruments) -- (instruments bridge) -- node[arrow text, pos=0.425, fill=white]{instru-\\ment\\parts} (midi);
+    \draw [arrow] (voice) |- (voice bridge) -- node[arrow text, pos=0.425, fill=white]{voice\\parts} (sample);
+    \draw [arrow] (sample) -- ($(sample.south) + (0, -0.5cm)$) -| (soundfont bridge) |- (export combined) -- (output);
+    \draw [arrow] (midi) -- (export combined) -- node[arrow text, pos=0.45, fill=white]{digital signal} (output);
+    \draw [arrow] (output) -- (stop);
+
+    \begin{scope}[on background layer]
+        \node [component top center={Audio Export}{purple}, fit=(midi) (sample)] {};
+    \end{scope}
+    
+\end{tikzpicture}
