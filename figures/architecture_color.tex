@@ -1,19 +1,17 @@
 \begin{tikzpicture}[
-    node distance=1.5cm,
-    inner sep=0,
-    outer sep=0,
+    node distance=0,
 ]
     %% INPUT
     \node (start) [startstop] {Start};
-    \node (input) [document, right=of start, xshift=-0.5cm] {Input melody};
+    \node (input) [document, right=of start, xshift=1cm] {Input melody};
 
     \draw [arrow] (start) -- (input);
 
     %% MELODY EXTRACTION
-    \node (hpss) [block, below=of input, yshift=-0.167cm] {HPSS};
-    \node (pyin) [block, below=of hpss, yshift=-0.333cm] {PYIN};
-    \node (onset) [block, left=of pyin, xshift=0.75cm] {Onset detection};
-    \node (melody builder) [block, below=of pyin, yshift=0.167cm] {Melody builder};
+    \node (hpss) [block, below=of input, yshift=-1.5cm] {HPSS};
+    \node (pyin) [block, below=of hpss, yshift=-1.75cm] {PYIN};
+    \node (onset) [block, left=of pyin, xshift=-0.75cm] {Onset detection};
+    \node (melody builder) [block, below=of pyin, yshift=-1.25cm] {Melody builder};
     
     \draw [arrow] (input) -- node[arrow text, pos=0.4, fill=white]{digital signal} (hpss);
     \draw [arrow] (hpss) -| node[arrow text, pos=0.75, text width=2cm, fill=blue!5]{percussive component} (onset);
@@ -26,8 +24,8 @@
     \end{scope}
 
     %% CHORD GENERATION
-    \node (melody ctx) [below=of melody builder, xshift=1.167cm, yshift=0.875cm] {melody};
-    \node (viterbi) [block, right=of melody ctx, xshift=-0.083cm] {Viterbi};
+    \node (melody ctx) [arrow text, below=of melody builder, xshift=1.15cm, yshift=-0.75cm] {melody};
+    \node (viterbi) [block, right=of melody ctx, xshift=1.3cm] {Viterbi};
 
     \draw [arrow] (melody builder) |- (melody ctx) -- (viterbi);
 
@@ -36,37 +34,37 @@
     \end{scope}
 
     %% ACCOMPANIMENT GENERATION
-    \node (percussion) [block, above=of viterbi, yshift=0.125cm] {Percussion generator};
-    \node (piano) [block, above=of percussion, yshift=0.5cm] {Piano generator};
-    \node (voice) [block, above=of piano, yshift=-0.667cm] {Voice generator};
-    \node (instruments) [summing, above=of percussion, yshift=-0.75cm] {};
+    \node (percussion) [block, above=of viterbi, yshift=1.75cm] {Percussion generator};
+    \node (piano) [block, above=of percussion, yshift=1.9cm] {Piano generator};
+    \node (voice) [block, above=of piano, yshift=1cm] {Voice generator};
+    \node (instruments) [summing, above=of percussion, yshift=0.7cm] {};
 
-    \node (instruments bridge) [arrow bridge, right of=instruments, xshift=0.5cm] {};
-    \node (voice bridge) [arrow bridge, right of=voice, xshift=0.5cm, yshift=-1cm] {};
+    \node (instruments bridge) [arrow bridge, right of=instruments, xshift=2cm] {};
+    \node (voice bridge) [arrow bridge, below=of voice, xshift=2cm, yshift=(0.165cm - 0.5cm)] {};
 
-    \node (chords ctx) [below=of instruments bridge, yshift=-1.167cm, align=center] {chord progression};
+    \node (chords ctx) [arrow text, below=of instruments bridge, yshift=-2.5cm, align=center] {chord progression};
 
     \draw [arrow] (viterbi) -| (chords ctx) |- (percussion);
     \draw [arrow] (chords ctx) -- (instruments bridge) |- (piano);
     \draw [arrow] (chords ctx) -- (instruments bridge) -- (voice bridge) |- (voice);
-    \draw [arrow] ($(melody ctx.east) + (0.5cm, 0)$) |- (percussion);
-    \draw [arrow] ($(melody ctx.east) + (0.5cm, 0)$) |- (piano);
-    \draw [arrow] ($(melody ctx.east) + (0.5cm, 0)$) |- (voice);
+    \draw [arrow] ($(melody ctx.east) + (0.4cm, 0)$) |- (percussion);
+    \draw [arrow] ($(melody ctx.east) + (0.4cm, 0)$) |- (piano);
+    \draw [arrow] ($(melody ctx.east) + (0.4cm, 0)$) |- (voice);
 
     \begin{scope}[on background layer]
         \node [component top center={Accompaniment Generation}{brown}, fit=(percussion) (piano) (voice)] {};
     \end{scope}
 
     %% AUDIO EXPORT
-    \node (sample) [block, right of=voice bridge, xshift=1.75cm] {Sample-based export};
-    \node (midi) [block, right of=instruments bridge, xshift=1.75cm] {MIDI-based export};
-    \node (export combined) [summing, below=of midi, yshift=0.625cm] {};
-    \node (output) [document, below=of export combined, yshift=0.167cm] {Output song};
-    \node (stop) [startstop, right=of output, xshift=-0.5cm] {Stop};
+    \node (sample) [block, right of=voice bridge, xshift=3.25cm] {Sample-based export};
+    \node (midi) [block, right of=instruments bridge, xshift=3.25cm] {MIDI-based export};
+    \node (export combined) [summing, below of=midi, yshift=-2cm] {};
+    \node (output) [document, below=of export combined, yshift=-1.3cm] {Output song};
+    \node (stop) [startstop, right=of output, xshift=1cm] {Stop};
     
-    \node (sample lib) [data, right=of sample, xshift=0.125cm] {Custom sample library};
-    \node (soundfont) [data, right=of midi, xshift=0.125cm] {Soundfont library};
-    \node (soundfont bridge) [arrow bridge, left=of soundfont, xshift=0.875cm] {};
+    \node (sample lib) [data, right=of sample, xshift=1.75cm] {Custom sample library};
+    \node (soundfont) [data, right=of midi, xshift=1.75cm] {Soundfont library};
+    \node (soundfont bridge) [arrow bridge, right=of midi, xshift=0.75cm] {};
     
     \draw [arrow] (sample lib) -- (sample);
     \draw [arrow] (soundfont) -- (soundfont bridge) -- (midi);

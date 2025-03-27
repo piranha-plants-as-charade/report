@@ -5,6 +5,7 @@
     text centered,
     text width=1.75cm,
     inner sep=0.2cm,
+    outer sep=0,
     draw=black,
     fill=black!75,
     text=white,
@@ -16,6 +17,7 @@
     text centered,
     text width=1.75cm,
     inner sep=0.2cm,
+    outer sep=0,
     draw=black,
 ]
 
@@ -25,8 +27,19 @@
     trapezium right angle=110, 
     text width=1.75cm, 
     inner sep=0.2cm,
+    outer sep=0,
     text centered, 
     draw=black,
+]
+
+\tikzstyle{block}=[
+    rectangle,
+    text centered,
+    text width=1.75cm,
+    inner sep=0.2cm,
+    outer sep=0,
+    draw=black,
+    fill=white,
 ]
 
 \tikzset{
@@ -34,6 +47,7 @@
         rectangle,
         rounded corners=3pt,
         inner sep=0.3cm,
+        outer sep=0,
         draw=#2,
         label={[anchor=center, yshift=0.35cm, text=#2]north:#1},
         fill=#2!5
@@ -44,6 +58,7 @@
         rectangle,
         rounded corners=3pt,
         inner sep=0.3cm,
+        outer sep=0,
         draw=#2,
         label={[anchor=center, yshift=-0.35cm, text=#2]south:#1},
         fill=#2!5
@@ -54,20 +69,12 @@
         rectangle,
         rounded corners=3pt,
         inner sep=0.3cm,
+        outer sep=0,
         draw=#2,
         label={[anchor=west, yshift=-0.35cm, text=#2]south west:#1},
         fill=#2!5
     }
 }
-
-\tikzstyle{block}=[
-    rectangle,
-    text centered,
-    text width=1.75cm,
-    inner sep=0.2cm,
-    draw=black,
-    fill=white,
-]
 
 \tikzstyle{summing}=[
     circle,
@@ -78,18 +85,21 @@
         \draw [black]
             (path picture bounding box.135) -- (path picture bounding box.315)
             (path picture bounding box.45) -- (path picture bounding box.225);
-    }
+    },
+    inner sep=0,
 ]
 
 \tikzstyle{arrow}=[
     thick,->,>=stealth,
     text centered,
     inner sep=0.1cm,
+    outer sep=0,
 ]
 
 \tikzstyle{arrow text}=[
     align=center,
     inner sep=0.1cm,
+    outer sep=0,
 ]
 
 \tikzstyle{arrow bridge}=[
@@ -100,5 +110,7 @@
         \draw[black, thick] (0.165cm, 0) to (0.135cm - 0.75pt, 0);                   % right horizontal joint
         \draw[black, thick] (0, -0.165cm) to (0, 0.025cm);                           % vertical line
         \draw[black, thick] (0.135cm - 0.5pt, -0.25pt) arc (0:180:0.135cm - 0.5pt);  % bridge
-    }
+    },
+    inner sep=0,
+    outer sep=0,
 ]
