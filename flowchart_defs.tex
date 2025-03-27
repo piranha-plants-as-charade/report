@@ -96,7 +96,9 @@
     fill=white,
     minimum size=0.33cm,
     path picture={
-        \draw[black, thick] (0.16cm, -0.5pt) arc (0:180:0.16cm);
-        \draw[black, thick] (0, 16.5cm) to (0, -16.5cm);
+        \draw[black, thick] (-0.165cm, 0) to (-0.125cm + 0.75pt, 0);                 % left horizontal joint
+        \draw[black, thick] (0.165cm, 0) to (0.125cm - 0.75pt, 0);                   % right horizontal joint
+        \draw[black, thick] (0, -0.165cm) to (0, 0.033cm);                           % vertical line
+        \draw[black, thick] (0.125cm - 0.5pt, -0.25pt) arc (0:180:0.125cm - 0.5pt);  % bridge
     }
 ]
