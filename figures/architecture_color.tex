@@ -69,7 +69,7 @@
     \draw [arrow] (sample lib) -- (sample);
     \draw [arrow] (soundfont) -- (soundfont bridge) -- (midi);
     \draw [arrow] (piano) -- (instruments) -- (instruments bridge) -- (midi);
-    \draw [arrow] (percussion) -- (instruments) -- (instruments bridge) -- node[arrow text, pos=0.425, fill=white]{instru-\\ment\\parts} (midi);
+    \draw [arrow] (percussion) -- (instruments) -- (instruments bridge) -- node[arrow text, pos=0.425, fill=white, inner sep=0]{instru-\\ment\\parts} (midi);
     \draw [arrow] (voice) |- (voice bridge) -- node[arrow text, pos=0.425, fill=white]{voice\\parts} (sample);
     \draw [arrow] (sample) -- ($(sample.south) + (0, -0.5cm)$) -| (soundfont bridge) |- (export combined) -- (output);
     \draw [arrow] (midi) -- (export combined) -- node[arrow text, pos=0.45, fill=white]{digital signal} (output);
