@@ -3,7 +3,7 @@
 
 The first step in Piranha Plants as Charade is to extract the melody from the input audio. The goal of this section is to take an audio file and output a sequence of notes, each with a MIDI pitch, start time, and duration. This problem can be broken down into two subproblems: pitch detection and note segmentation.
 
-As a pre-processing step, we first apply the Harmonic-Percussive Source Separation (HPSS) algorithm \autocite{HPSS:2010,HPSS:2014} to separate the harmonic and percussive components of the audio signal. We perform pitch detection on the harmonic component and use the percussive component to identify at what time each note starts, which we refer to as note onsets. Finally, we combine both components to produce the final sequence of notes.
+As a pre-processing step, we first apply the Harmonic-Percussive Source Separation (HPSS) algorithm \autocite{HPSS:2010,HPSS:2014} to separate the harmonic and percussive components of the audio signal. We perform pitch detection on the harmonic component and use the percussive component to identify the timestamps where notes start, which we refer to as note onsets. Finally, we combine both components to produce the final sequence of notes.
 
 \subsubsection{Pitch Detection}
 
@@ -11,8 +11,8 @@ This problem determines the fundamental frequency of a sound; we aim to produce 
 
 %% CEPSTRUM
 
-Our first attempt at pitch detection was with cepstrum analysis. Our input data consists of a sequence of tones, which each consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$, so we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform twice. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
-$$C = \text{FFT}\left(\log\left(\left|\text{FFT}\left(y\right)\right|\right)\right)$$
+Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, which each consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$, so we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform twice. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
+$$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
 The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
 $$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
 However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
@@ -29,21 +29,21 @@ Next, we explored autocorrelation as a method for pitch detection. The idea is t
         &= \frac{\sum_{n=k+1}^N \left(y_n - \mu_{y_n}\right) \left(y_{n-k} - \mu_{y_{n-k}}\right)}{\sum_n \left(y_n - \mu_{y_n}\right)^2}
     \end{align*}
 \end{quote}
-The non-zero shift with the highest correlation between signals corresponds to the fundamental frequency of the signal.
+The non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
 $$f_0 = \argmin_{f}\left\{ r\left(f\right) : f > 0 \right\}$$
-While this method yielded better results, it still showed some limitations in handling real audio recordings. The results were very sensitive to the choice of hyperparameters, such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
+While this method yielded better results, it was nonetheless limited in handling real audio recordings. The results were very sensitive to hyperparameter choices such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
 
 %% PYIN
 
-The PYIN algorithm \autocite{PYIN:2014} is robust on real audio and has a readily available implementation in the librosa library \footnote{\href{https://librosa.org/doc/0.11.0/generated/librosa.pyin.html}{librosa.org/doc/0.11.0/generated/librosa.pyin.html}}, which allowed us to focus on the higher-level aspects of our project. PYIN is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to handle audio more robustly. At a high level, PYIN applies autocorrelation to detect pitch candidates and refines the result using a probabilistic thresholding model to filter out spurious frequencies.
+The PYIN algorithm \autocite{PYIN:2014} is robust on real audio and has a readily available implementation in the librosa library\footnote{\href{https://librosa.org/doc/0.11.0/generated/librosa.pyin.html}{librosa.org/doc/0.11.0/generated/librosa.pyin.html}}, which allowed us to focus on the higher-level aspects of our project. PYIN is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to handle audio more robustly. At a high level, PYIN applies autocorrelation to detect pitch candidates and refines the result using a probabilistic thresholding model to filter out spurious frequencies.
 
-After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in hertz across time. We then apply multiple pitch shifts by a few cents \footnote{A logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI semitone.
+After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in hertz across time. We then apply multiple pitch shifts by a few cents \footnote{A logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI pitch.
 
 \subsubsection{Note Segmentation}
 
-Once we have the pitch sequence, it must be segmented into individual notes. To do this, we count quantized time units from the start of the first identified pitch at the assumed tempo of the song. Within each interval, we take the mode of the pitches as the pitch at that time. To determine breaks between notes, we end the previous note and begin a new one if either of the following conditions are met:
+Once we have the pitch sequence, it must be segmented into individual notes. To do this, we count quantized time units from the start of the first identified pitch at the assumed tempo of the song. Within each interval, we take the mode of the pitches as the pitch at that time. We end the previous note and begin a new one if either of the following conditions are met:
 \begin{enumerate}
     \item The pitch changes from the previous interval.
-    \item An onset is detected in the percussive component of the audio.
+    \item An onset is detected in the percussive component of the audio at the corresponding time.
 \end{enumerate}
 Thus, we obtain a sequence of notes defining the melody to pass to the next component.
