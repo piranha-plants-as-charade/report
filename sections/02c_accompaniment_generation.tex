@@ -15,22 +15,24 @@ Generating the melody is trivial: we use the extracted melody from Step \ref{sec
         m_i - 4 & \text{if }m_i - 4 \in S \\
     \end{cases}$$
 \end{quote}
-This harmonizes the melody in thirds, the same technique applied to most of the vocal harmony in ``Piranha Plants as Parade''. This algorithm works well for most inputs, however there is an edge case when the current chord conflicts with the scale. Because the vocal harmony line is low in volume, the occasional `error' does not overly stand out.
+This harmonizes the melody in thirds, which is the same technique applied to most of the vocal harmony in ``Piranha Plants as Parade''. This algorithm works well for most inputs; however, there is an edge case when the current chord conflicts with the scale. Because the vocal harmony line is low in volume, the occasional `error' does not overly stand out.
 
 \subsubsection{Piano Generation}
 
-This is the most complicated part of the accompaniment generation process. We want to emulate the style of stride piano, which involves playing alternating eighth notes from the bassline and the chord voicings. This clear separation of parts allows us to handle the bassline and chord voicings in two separate processes.
+This is the most complex part of the accompaniment generation process. We want to emulate the style of stride piano, which involves playing alternating eighth notes from the bassline and the chord voicings. This clear separation of parts allows us to handle the bassline and chord voicings in two separate processes.
 
-Our bassline generation algorithm is very simple. We alternate between the root pitch of the chord and a perfect fourth (five semitones) below said root pitch, restarting whenever the chord changes.
+Our bassline generation algorithm is very simple. We alternate between the root pitch of the chord and a perfect fourth below said root pitch (the fifth of the chord), restarting whenever the chord changes.
 
-The chord voicing algorithm is more complex. There are two types of chords we need to support: major (Type 1) chords and secondary dominant 7 (Type 2) chords. It is guaranteed that a Type 1 chord will always follow a Type 2 chord. First, we choose some arbitrary MIDI pitch $T$ and voice all Type 1 chords with the following algorithm:
+The chord voicing algorithm is more complex. There are two types of chords we need to support: major (Type 1) chords and secondary dominant 7 (Type 2) chords. It is guaranteed that a Type 1 chord will always follow a Type 2 chord. First, we choose some arbitrary anchor MIDI pitch $T$ and voice all Type 1 chords with the following algorithm:
 \begin{quote}
     Let $C = \left\{ c_1, \ c_2, \ c_3 \right\}$ be the set of MIDI pitches of the chord we want to voice.
     Let $V = \left\{ v_1, \ v_2, \ v_3 \right\}$ be the set of MIDI pitches in our computed voicing.
     Compute $V$ as follows:
     $$v_i = c_i + 12 \left( \argmin_{j \in \mathbb{Z}} \left\lvert c_i + 12j - T \right\rvert \right)$$
 \end{quote}
-This step clumps each note in the chord around $T$, which smoothens chord transitions. Next, we voice all Type 2 chords with the following algorithm that is based on voice-leading rules in Western music theory:
+This step clumps each note in the chord around $T$, which smoothens chord transitions.
+
+Next, we voice all Type 2 chords with the following algorithm that is based on voice-leading rules in Western music theory:
 \begin{quote}
     Let $M = \{ m_1, m_2, m_3\}$ be the voicing of the Type 1 chord following the chord we want to voice. By the definition of a major chord, we can uniquely assign the elements of $M$ such that:
     \begin{align*}
@@ -42,4 +44,4 @@ This step clumps each note in the chord around $T$, which smoothens chord transi
 
 \subsubsection{Percussion Generation}
 
-The percussion generation algorithm is very simple: the generated snare drum part outlines a gallop rhythm\footnote{A repeating pattern that consists of an eighth note followed by two sixteenth notes.}, whereas the bass drum plays on the first beat of every measure. ``Piranha Plants as Parade'' mostly follows this pattern, and since percussion generation was not in our MVP, this simplified process suffices for our proof-of-concept.
+The percussion generation algorithm is very simple: the generated snare drum part outlines a gallop rhythm\footnote{A repeating pattern that consists of an eighth note followed by two sixteenth notes.}, whereas the bass drum plays on the first beat of every measure. ``Piranha Plants as Parade'' mostly follows this pattern, thus we include it as a stretch feature in our proof-of-concept.
