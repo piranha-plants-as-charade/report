@@ -11,7 +11,7 @@ This problem determines the fundamental frequency of a sound; we aim to produce 
 
 %% CEPSTRUM
 
-Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, which each consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$, so we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform twice. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
+Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
 $$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
 The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
 $$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
@@ -21,16 +21,18 @@ However, this method is not robust to noise and did not perform reliably in our 
 
 Next, we explored autocorrelation as a method for pitch detection. The idea is to find the periodicity of the signal by comparing it to a delayed version of itself. One formulation of the autocorrelation function, adapted from the Pearson correlation coefficient, is given by the following formula:
 \begin{quote}
-    Let $y_i$ be ... Let $\mu_i$ be ...
-    Define the autocorrelation between ... as:
+    Given a signal $y$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$.
+    Let $\mu_{y_i}$ be the mean of the subsequence $y_i$.
+    
+    The autocorrelation of a signal with its version delayed by a shift of $k$ is defined as:
     \begin{align*}
         r\left(k\right)
         &= \frac{\text{Cov}\left(y_n, y_{n-k}\right)}{\text{Var}\left(y_n\right)} \\
         &= \frac{\sum_{n=k+1}^N \left(y_n - \mu_{y_n}\right) \left(y_{n-k} - \mu_{y_{n-k}}\right)}{\sum_n \left(y_n - \mu_{y_n}\right)^2}
     \end{align*}
 \end{quote}
-The non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
-$$f_0 = \argmin_{f}\left\{ r\left(f\right) : f > 0 \right\}$$
+Given the sampling rate $f_s$, the non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
+$$f_0 = \frac{f_s}{\argmin_{k}\left\{ r\left(k\right) : k > 0 \right\}}$$
 While this method yielded better results, it was nonetheless limited in handling real audio recordings. The results were very sensitive to hyperparameter choices such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
 
 %% PYIN
