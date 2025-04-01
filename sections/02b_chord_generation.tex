@@ -1,9 +1,7 @@
 \subsection{Chord Generation}
 \label{sec:chord_generation}
 
-After extracting the melody, the next step in Piranha Plants as Charade is to generate chords that harmonize with the melody. The problem of selecting chords that ``sound good'' with a melody is generally quite open-ended and subjective. For any given melody, there are many different sequences of chords that could harmonize with it, evoking different emotions and styles.To narrow down the scope, our MVP implementation focuses on generating chords adhering with the style of Piranha Plants.
-
-The chord generation component produces a sequence of chords, each defined by a root note and a chord quality. For example, a C major chord has a root note of C and a chord quality of major. In order to determine the ``best'' sequence, we model this problem using the Hidden Markov Model (HMM) framework.
+The next step in Piranha Plants as Charade is to generate the `best' chord progression\footnote{A sequence of chords.} for the extracted melody from Part \ref{sec:melody_extraction}. It is generally quite open-ended and subjective whether a chord progression `sounds good' with a melody, and there can be many different appropriate chord progressions that evoke different emotions and styles. For this project, we define `appropriate` to mean in adherance with the style of Piranha Plants. We use the Hidden Markov Model (HMM) framework to determine the most appropriate chord progression.
 
 The Hidden Markov Model \autocite{HMM:2023}, depicted in Figure \ref{fig:hmm}, is a statistical model that describes a sequence of hidden states, each of which emits an observation. In the context of chord generation, we model the hidden states as the sequence of chords and the observations as a function of the melody. The HMM framework allows us to model the probability of a chord sequence given a melody, which we can then use to generate the most likely or most favorable sequence of chords.
 
@@ -23,15 +21,19 @@ The model consists of the following components for time step $t \geq 0$:
     \label{fig:hmm}
 \end{figure}
 
-In the most basic case, states and observations can be mapped to integer indices such that the transition and observation probabilities can be represented as matrices. The model can then be solved using the Viterbi algorithm, which is a dynamic programming algorithm that finds the most likely sequence of hidden states given the observations.
+In the most basic case, states and observations can be mapped to integer indices such that the transition and observation probabilities can be represented as matrices. The model can then be solved using the Viterbi \autocite{HMM:2023} algorithm, which is a dynamic programming algorithm that finds the most likely sequence of hidden states given the observations.
 
-For this project, we found it easier to implement the transition and observation probabilities as scores instead to better capture the subjective process of selecting chords. The transition scores represent the favorability of transitioning between two chords, while the observation scores represent the favorability of a chord given the melody.
+For this project, we implemented the transition and observation probabilities as scores (i.e. unnormalized, relative probabilities). The transition scores represent the favorability of transitioning between two chords, while the observation scores represent the favorability of a chord given the melody.
 
 \subsubsection{Transition Scores}
 
-To define the transitions, we started by restricting the valid states to only a small set of chords that appear in ``Piranha Plants on Parade'': I, IV, and V of the key; and their respective V7 chords. Thus, each of these chords can transition to each other with a constant score.
-
-Another rule we implemented is that the V7 chord must resolve to the I chord. This is a common resolution in music theory, and it is used in ``Piranha Plants on Parade''. We assigned a higher score to this transition to ensure that the model would favor this resolution.
+Our transitions are based on an analysis of ``Piranha Plants on Parade'' through a Western music theory perspective. We identified the following patterns:
+\begin{enumerate}
+    \item The I, IV, and V chords\footnote{TODO: explain this} and their respective secondary dominant chords\footnote{TODO explain this} almost exclusively used.
+    \item A secondary dominant chord must be followed by their respective I, IV, or V chord.
+    \item Secondary dominant chords occur frequently.
+\end{enumerate}
+In our transition scores, we restricted the valid states to follow the first two patterns, and we applied a 1.5x score multiplier for transitioning away from a secondary dominant chord to model the last pattern.
 
 \subsubsection{Observation Scores}
 
