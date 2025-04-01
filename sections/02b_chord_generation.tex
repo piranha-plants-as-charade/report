@@ -16,7 +16,12 @@ The model consists of the following components for time step $t \geq 0$:
     \item \textbf{Observation Probabilities} $P(o_t | s_t)$: The probabilities of emitting an observation given a state.
 \end{itemize}
 
-\input{figures/hmm.tex}
+\begin{figure}
+    \centering
+    \input{figures/hmm.tex}
+    \caption{Hidden Markov Model for chord generation.}
+    \label{fig:hmm}
+\end{figure}
 
 In the most basic case, states and observations can be mapped to integer indices such that the transition and observation probabilities can be represented as matrices. The model can then be solved using the Viterbi algorithm, which is a dynamic programming algorithm that finds the most likely sequence of hidden states given the observations.
 
