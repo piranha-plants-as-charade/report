@@ -4,15 +4,15 @@
         \includegraphics[width=7cm]{figures/piranha_plants_snippet.png}
     };
 
-    \node[draw, red, thick, anchor=north west, minimum width=1.7cm, minimum height=1.3cm] (notes1) at ([xshift=1.25cm, yshift=-0.1cm] notes.north west) {};
-    \node[draw, blue, thick, anchor=north west, minimum width=1.6cm, minimum height=1.3cm] (notes2) at ([xshift=3cm, yshift=-0.1cm] notes.north west) {};
+    \node[draw, red, semithick, anchor=north west, minimum width=1.75cm, minimum height=1cm] (notes1) at ([xshift=0.92cm, yshift=-0.03cm] notes.north west) {};
+    \node[draw, blue, semithick, anchor=north west, minimum width=1.65cm, minimum height=1cm] (notes2) at ([xshift=2.77cm, yshift=-0.03cm] notes.north west) {};
 
     % Hidden states
-    \node[draw, circle, below=of notes.west, anchor=west, xshift=0.3cm, yshift=-2.5cm] (s0) {$s_0$};
-    \node[draw, circle, right=of s0] (s1) {$s_1$};
-    \node[draw, circle, right=of s1] (s2) {$s_2$};
-    \node[right=0.5cm of s2] (dots) {\Large $\dots$};
-    \node[draw, circle, right=0.3cm of dots] (st) {$s_t$};
+    \node[draw, circle, below=of notes.west, anchor=west, xshift=-0.27cm, yshift=-2.5cm] (s0) {$s_0$};
+    \node[draw, circle, right= 1cm of s0] (s1) {$s_1$};
+    \node[draw, circle, right=1.08cm of s1] (s2) {$s_2$};
+    \node[right=0.85cm of s2] (dots) {\Large $\dots$};
+    \node[draw, circle, right=0.75cm of dots] (st) {$s_t$};
     
     % Observation states
     \node[draw, circle, red, above=of s1] (o1) {$o_1$};
