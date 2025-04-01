@@ -21,7 +21,7 @@ However, this method is not robust to noise and did not perform reliably in our 
 
 Next, we explored autocorrelation as a method for pitch detection. The idea is to find the periodicity of the signal by comparing it to a delayed version of itself. One formulation of the autocorrelation function, adapted from the Pearson correlation coefficient, is given by the following formula:
 \begin{quote}
-    Given a signal $y$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$.
+    Given a signal $y$, and a window size $N \in \mathbb N^*$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$.
     Let $\mu_{y_i}$ be the mean of the subsequence $y_i$.
     
     The autocorrelation of a signal with its version delayed by a shift of $k$ is defined as:
