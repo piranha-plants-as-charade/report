@@ -21,8 +21,7 @@ However, this method is not robust to noise and did not perform reliably in our 
 
 Next, we explored autocorrelation as a method for pitch detection. The idea is to find the periodicity of the signal by comparing it to a delayed version of itself. One formulation of the autocorrelation function, adapted from the Pearson correlation coefficient, is given by the following formula:
 \begin{quote}
-    Given a signal $y$, and a window size $N \in \mathbb N^*$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$.
-    Let $\mu_{y_i}$ be the mean of the subsequence $y_i$.
+    Given a signal $y$ and a window size $N \in \mathbb N^\ast$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$ with $\mu_{y_i}$ as its mean.
     
     The autocorrelation of a signal with its version delayed by a shift of $k$ is defined as:
     \begin{align*}
@@ -32,7 +31,7 @@ Next, we explored autocorrelation as a method for pitch detection. The idea is t
     \end{align*}
 \end{quote}
 Given the sampling rate $f_s$, the non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
-$$f_0 = \frac{f_s}{\argmin_{k}\left\{ r\left(k\right) : k > 0 \right\}}$$
+$$f_0 = \frac{f_s}{\argmin_{k}\left\{ r\left(k\right) : k \in \mathbb N^\ast \right\}}$$
 While this method yielded better results, it was nonetheless limited in handling real audio recordings. The results were very sensitive to hyperparameter choices such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
 
 %% PYIN
