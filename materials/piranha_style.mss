@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <museScore version="4.40">
   <Style>
-    <pageWidth>8.27</pageWidth>
-    <pageHeight>11.69</pageHeight>
-    <pagePrintableWidth>8.27</pagePrintableWidth>
+    <pageWidth>6.27</pageWidth>
+    <pageHeight>7.69</pageHeight>
+    <pagePrintableWidth>6.27</pagePrintableWidth>
     <pageEvenLeftMargin>0</pageEvenLeftMargin>
     <pageOddLeftMargin>0</pageOddLeftMargin>
     <pageEvenTopMargin>0</pageEvenTopMargin>
@@ -11,8 +11,8 @@
     <pageOddTopMargin>0</pageOddTopMargin>
     <pageOddBottomMargin>0</pageOddBottomMargin>
     <pageTwosided>1</pageTwosided>
-    <staffUpperBorder>7</staffUpperBorder>
-    <staffLowerBorder>7</staffLowerBorder>
+    <staffUpperBorder>0</staffUpperBorder>
+    <staffLowerBorder>0</staffLowerBorder>
     <staffHeaderFooterPadding>1</staffHeaderFooterPadding>
     <staffDistance>6.5</staffDistance>
     <instrumentNameOffset>1</instrumentNameOffset>
@@ -382,7 +382,7 @@
     <chordExtensionAdjust>0</chordExtensionAdjust>
     <chordModifierMag>1</chordModifierMag>
     <chordModifierAdjust>0</chordModifierAdjust>
-    <concertPitch>0</concertPitch>
+    <concertPitch>1</concertPitch>
     <multiVoiceRestTwoSpaceOffset>0</multiVoiceRestTwoSpaceOffset>
     <createMultiMeasureRests>0</createMultiMeasureRests>
     <minEmptyMeasures>2</minEmptyMeasures>
@@ -1532,6 +1532,6 @@
     <dummyMusicalSymbolsScale>1</dummyMusicalSymbolsScale>
     <autoplaceEnabled>1</autoplaceEnabled>
     <defaultsVersion>440</defaultsVersion>
-    <Spatium>1.74978</Spatium>
+    <Spatium>1.3716</Spatium>
     </Style>
   </museScore>

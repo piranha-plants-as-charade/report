@@ -30,6 +30,7 @@
 \usepackage{
 	amsmath,
 	tikz,
+	pgf-pie,
 }
 
 \usetikzlibrary{shapes.geometric, shapes.symbols, arrows, positioning, calc, fit, backgrounds}
@@ -54,13 +55,14 @@
 
 % Authors are listed in a comma-separated list with superscript numbers indicating affiliations
 % \thanks{} is used for any text that should be placed in a footnote on the first page, such as the corresponding author's email, journal acceptance dates, a copyright/license notice, keywords, etc
-\author{Max Huang$^*$, Emily Yu$^*$}
+\author{Max Huang$^\ast$, Emily Yu$^\ast$}
 % \author{%
 % 	John Smith\textsuperscript{1,2}, Robert Smith\textsuperscript{3} and Jane Smith\textsuperscript{1}\thanks{Corresponding author: \href{mailto:jane@smith.com}{jane@smith.com}\\ \textbf{Received:} October 20, 2023, \textbf{Published:} December 14, 2023}
 % }
 
 % Affiliations are output in the \date{} command
-\date{April 4, 2025}
+% \date{April 4, 2025}
+\date{\footnotesize\textsuperscript{$\ast$}Equal contribution}
 % \date{\footnotesize\textsuperscript{\textbf{1}}School of Chemistry, The University of Michigan\\ \textsuperscript{\textbf{2}}Physics Department, The University of Wisconsin\\ \textsuperscript{\textbf{3}}Biological Sciences Department, The University of Minnesota}
 
 \input{sections/00_abstract.tex}
@@ -71,7 +73,7 @@
 
 \maketitle % Output the title section
 
-\def\thefootnote{*}\footnotetext{Equal contribution}\def\thefootnote{\arabic{footnote}}
+% \def\thefootnote{*}\footnotetext{Equal contribution}\def\thefootnote{\arabic{footnote}}
 
 %----------------------------------------------------------------------------------------
 %	ARTICLE CONTENTS

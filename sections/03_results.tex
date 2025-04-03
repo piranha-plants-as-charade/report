@@ -1,21 +1,41 @@
 \section{Results}
 \label{sec:results}
 
-Our implementation of Piranha Plants as Charade can successfully take an audio file of the melody as input and generate an audio file of the song in the style of ``Piranha Plants on Parade''. The generated output contains the melody and a harmony line sung by synthesized vocals, as well as accompanying piano and percussion parts. A collection of sample inputs and outputs is available in our public results repository at \href{https://github.com/piranha-plants-as-charade/results/tree/ff597ce27f76daa1df1426bdfcb646833f433c2e}{github.com/piranha-plants-as-charade/results}.
-
-\subsection{Qualitative Analysis}
-\label{sec:qualitative_analysis}
+Our implementation of Piranha Plants as Charade can successfully take an audio file of the melody as input and generate an audio file of the song in the style of ``Piranha Plants on Parade''. The generated output contains the melody and a harmony line sung by synthesized vocals, as well as accompanying piano and percussion parts. A collection of sample inputs and outputs is available in our public results repository (SEE APPENDIX).
 
 To evaluate the performance of our system, we conducted a qualitative analysis of the generated audio files. We compared the generated output to the original song, ``Piranha Plants on Parade'', and assessed the following aspects:
-
 \begin{enumerate}
     \item \textbf{Accuracy of the melody}: we compared the generated melody to the original melody and assessed how well it matches the original.
     \item \textbf{Chord progression}: we assessed the generated chord progression's compatibility with the melody, as well as with the original chord progression.
 \end{enumerate}
 
-The sheet music for both the original and generated versions of ``Piranha Plants on Parade'' are included in the supplementary materials in Section \ref{sec:sheet_music}. The sheet music has been cleaned up and formatted by hand for legibility and to focus on the core aspects of the song relevant to this project. In particular, we removed irrelevant instrument parts from the original sheet music and transposed it to the key of C major to match the generated version.
+\subsection{Melody Extraction Results}
+\label{sec:melody_extraction_results}
 
-\begin{itemize}
-    \item Talk about the melody
-    \item Talk about the chord progression
-\end{itemize}
+\begin{table} % Single column table
+	\caption{Melody extraction results.}
+	\centering
+	\input{figures/melody_extraction_results.tex}
+	\label{tab:melody_extraction_table}
+\end{table}
+To evaluate the efficacy of the melody extraction process, we analyzed the melody extraction outputs for an excerpt from ``Piranha Plants on Parade''\footnote{The first eighth rest was converted into a note to meet our MVP contraints.} with the following timbres from MuseScore's ``MS Basic'' soundfont: flute, piano, tenor saxophone, trumpet, and violin. The pitch and rhythm mistake counts are recorded in Table \ref{tab:melody_extraction_table}.
+
+Qualitatively, we were pleased by the outputs from the tenor saxophone and the piano with low-and-no noise. They were by no means perfect, but the mistakes were few and minor. The flute, trumpet, and remaining piano inputs worked decently well; there were clear mistakes, but the melody remains recognizable. The violin output was very poor and beared little resemblance to the input.
+
+Based on the piano data, there is a trend of input noise leading to less accurate outputs. However, the correlation is not perfect; for example, the melody extraction process was more accurate for the piano input with low noise than for the piano input with no noise. Based on the overall data, it is clear that the output pitches are generally more accurate than the output rhythms. This implies that the PYIN step of the process is more reliable than the onset detection step because most rhythmic mistakes can be attributed to onset detection errors; extra articulations correspond to false positive onsets and missing articulations correspond to false negative onsets --- PYIN errors can only correspond to extra rests (which were uncommon).
+
+\subsection{Chord Progression Results}
+\label{sec:chord_progression_results}
+
+\begin{figure}
+    \resizebox{\linewidth}{!}{\input{figures/chord_progression_results.tex}}
+    \caption{Chord progression results.}
+    \label{fig:chord_progression_pie}
+\end{figure}
+As the first step for evaluating the chord progression generation efficacy, we ran Piranha Plants as Charade with a hard-coded except from the melody of ``Piranha Plants on Parade'', then we compared the output chord progression to the respective original chord progression.
+
+Overall, the results are very good. The original and generated chords matched perfectly for 9/16 of the excerpt; a similar chord was chosen for another 2/16 of the excerpt; and the chord generation algorithm chose an acceptable chord for the remaining 5/16 of the excerpt.
+
+% To evaluate the chord progression generation efficacy on other test cases, we ran the generated a simplified rendition of ``Piranha Plants on Parade''.
+
+% The sheet music for both the original and generated versions of ``Piranha Plants on Parade'' are included in the supplementary materials in Section \ref{sec:sheet_music}. The sheet music has been cleaned up and formatted by hand for legibility and to focus on the core aspects of the song relevant to this project. In particular, we removed irrelevant instrument parts from the original sheet music and transposed it to the key of C major to match the generated version.
