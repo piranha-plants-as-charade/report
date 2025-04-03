@@ -7,7 +7,7 @@ The current implementation of Piranha Plants as Charade is a proof-of-concept th
 
 \subsubsection{Improving Melody Extraction}
 
-TODO:
+TODO: summarize insights from results, mention that the current method does not work for real recordings.
 
 \subsubsection{Expanding to Additional Styles}
 
@@ -23,7 +23,7 @@ One key assumption for the first-order Hidden Markov Model (HMM) is the Markov a
 
 One interesting expansion of Piranha Plants as Charade is to implement real-time processing of audio input. This would allow for a more interactive free-style experience, where users can sing or play along with a generated harmony. However, one fundamental flaw of our current approach is that our chord generation algorithm assumes we have access to the full melody to predict the entire chord sequence together. This is not the case in real-time processing, where we only have access to the melody up to the current time step. Thus, we would need to pivot to a different approach to chord generation that can predict the next chord based on the current melody, and it must be able to do so in real-time.
 
-One approach building upon our current work is to process each time step independently, applying the transition and observation models once to determine the next chord. However, this is a greedy approach and it would not be able to capture the long-term dependencies of the melody.
+One approach building upon our current work is to process each time step independently, applying the transition and observation models once to determine the next chord. However, this greedy approach would not be able to capture the long-term dependencies of the melody.
 
 \subsubsection{Optimizing MIDI to WAV Conversion}
 
