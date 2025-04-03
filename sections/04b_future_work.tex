@@ -1,0 +1,30 @@
+\subsection{Avenues for Future Work}
+\label{sec:avenues}
+
+\subsubsection{Relax MVP Assumptions}
+
+The current implementation of Piranha Plants as Charade is a proof-of-concept that demonstrates the feasibility of our approach. However, it is limited by the assumptions we made in order to simplify the problem. For example, we assume that the input melody is played at 110 BPM, which is the tempo of the original song. Moving forward, we would like to relax this assumption and allow for arbitrary tempos. This would require us to implement a more sophisticated melody extraction algorithm that can handle varying tempos. There are existing methods to identify the beat and infer the tempo, such as BeatNet \cite{BeatNet:2021}.
+
+\subsubsection{Improving Melody Extraction}
+
+TODO:
+
+\subsubsection{Expanding to Additional Styles}
+
+In the current implementation, the chord progression we generate is determined by the observation and transition models that we define by hand. These capture the cohesiveness of a melody and a chord, and preferences for how to transition between chords respectively. For the purposes of this MVP, we have only implemented the style of ``Piranha Plants on Parade'' by specifying a particular instance of the transition and observation models. However, we can easily expand this to other styles by defining new transition and observation models according to different harmonic patterns.
+
+However, defining the transition and observation models by hand is a tedious process that requires a deep understanding of music theory. A more scalable approach would be to use a data-driven approach to learn the transition and observation models from a corpus of music. This would allow us to tailor the models to a specific style of music programmatically. It is worth noting that a bottleneck for this approach is the availability of data, as it would require a melody and the corresponding chord progression aligned with it.
+
+\subsubsection{Extensions of the Hidden Markov Model}
+
+One key assumption for the first-order Hidden Markov Model (HMM) is the Markov assumption: that the next state depends only on the current state, and not the past \autocite{SpeechLang:2025}. While this assumption simplified our approach and provided a simple solution to solve it, this assumption limits the model's ability to capture long-term dependencies, which could be an important element in generating more complex chord progressions. For example, one common cadence\footnote{A harmonic progression signaling the end of a phrase, often creating a sense of resolution.} across many genres is ii-V-I. To encourage this cadence, we would need to define a transition model that captures the transition from ii to V and then to I. However, this is not possible with the first-order HMM, as its memory is limited to the most recent state. Higher-order HMMs would be able to capture patterns spanning multiple chords. Algorithms for solving higher-order HMMS have been developed, such as the Baum-Welch algorithm \autocite{BaumWelch:1970}, a method by Ye and Wang that entails encoding previous states as tuples \autocite{DecodeHMM:2014}, and an extended Viterbi algorithm for second-order HMMs \autocite{Viterbi2:1988}.
+
+\subsubsection{Real-Time Processing}
+
+One interesting expansion of Piranha Plants as Charade is to implement real-time processing of audio input. This would allow for a more interactive free-style experience, where users can sing or play along with a generated harmony. However, one fundamental flaw of our current approach is that our chord generation algorithm assumes we have access to the full melody to predict the entire chord sequence together. This is not the case in real-time processing, where we only have access to the melody up to the current time step. Thus, we would need to pivot to a different approach to chord generation that can predict the next chord based on the current melody, and it must be able to do so in real-time.
+
+One approach building upon our current work is to process each time step independently, applying the transition and observation models once to determine the next chord. However, this is a greedy approach and it would not be able to capture the long-term dependencies of the melody.
+
+\subsubsection{Optimizing MIDI to WAV Conversion}
+
+TODO:
