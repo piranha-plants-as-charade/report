@@ -1,7 +1,7 @@
 \section{Results}
 \label{sec:results}
 
-Our implementation of Piranha Plants as Charade can successfully take an audio file of the melody as input and generate an audio file of the song in the style of ``Piranha Plants on Parade''. The generated output contains the melody and a harmony line sung by synthesized vocals, as well as accompanying piano and percussion parts. A collection of sample inputs and outputs is available in our public results repository (SEE APPENDIX).
+Our implementation of Piranha Plants as Charade can successfully take an audio file of the melody as input and generate an audio file of the song in the style of ``Piranha Plants on Parade''. The generated output contains the melody and a harmony line sung by synthesized vocals, as well as accompanying piano and percussion parts. A collection of sample inputs and outputs is available in our public results repository (See Appendix \ref{sec:code}).
 
 To evaluate the performance of our system, we conducted a qualitative analysis of the generated audio files. We compared the generated output to the original song, ``Piranha Plants on Parade'', and assessed the following aspects:
 \begin{enumerate}
@@ -18,9 +18,9 @@ To evaluate the performance of our system, we conducted a qualitative analysis o
 	\input{figures/melody_extraction_results.tex}
 	\label{tab:melody_extraction_table}
 \end{table}
-To evaluate the efficacy of the melody extraction process, we analyzed the melody extraction outputs for an excerpt from ``Piranha Plants on Parade''\footnote{The first eighth rest was converted into a note to meet our MVP contraints.} with the following timbres from MuseScore's ``MS Basic'' soundfont: flute, piano, tenor saxophone, trumpet, and violin. The pitch and rhythm mistake counts are recorded in Table \ref{tab:melody_extraction_table}.
+To evaluate the efficacy of the melody extraction process, we analyzed the melody extraction outputs for an excerpt from ``Piranha Plants on Parade''\footnote{The first eighth rest was converted into a note to meet our MVP contraints.} with the following timbres from MuseScore's ``MS Basic'' soundfont: flute, piano, tenor saxophone, trumpet, and violin. The pitch and rhythm mistake counts are recorded in Table \ref{tab:melody_extraction_table}. Additionally, we tested the piano soundfont with different noise levels: no noise, low white noise (0.3\% amplitude), medium white noise (0.7\% amplitude), and high white noise (1\% amplitude).
 
-Qualitatively, we were pleased by the outputs from the tenor saxophone and the piano with low-and-no noise. They were by no means perfect, but the mistakes were few and minor. The flute, trumpet, and remaining piano inputs worked decently well; there were clear mistakes, but the melody remains recognizable. The violin output was very poor and beared little resemblance to the input.
+Qualitatively, the outputs from the tenor saxophone, low-noise piano, and no-noise piano were good. There were errors, but they were few and minor. The outputs for the flute, trumpet, and remaining piano inputs were acceptable; there were clear mistakes, but the melody remains recognizable. The violin output was very poor and bore little resemblance to the input.
 
 Based on the piano data, there is a trend of input noise leading to less accurate outputs. However, the correlation is not perfect; for example, the melody extraction process was more accurate for the piano input with low noise than for the piano input with no noise. Based on the overall data, it is clear that the output pitches are generally more accurate than the output rhythms. This implies that the PYIN step of the process is more reliable than the onset detection step because most rhythmic mistakes can be attributed to onset detection errors; extra articulations correspond to false positive onsets and missing articulations correspond to false negative onsets --- PYIN errors can only correspond to extra rests (which were uncommon).
 
