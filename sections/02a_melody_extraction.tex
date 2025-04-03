@@ -9,33 +9,6 @@ As a pre-processing step, we first apply the Harmonic-Percussive Source Separati
 
 This problem determines the fundamental frequency of a sound; we aim to produce a sequence of MIDI pitches that correspond to notes in the melody. We explored a few different approaches, starting with cepstrum analysis and autocorrelation. However, these methods failed to handle the complexity of real audio recordings which contain substantial noise. We decided to use the PYIN algorithm as implemented in the librosa library, which is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to detect pitches more robustly.
 
-%% CEPSTRUM
-
-Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
-$$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
-The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
-$$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
-However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
-
-%% AUTOCORRELATION
-
-Next, we explored autocorrelation as a method for pitch detection. The idea is to find the periodicity of the signal by comparing it to a delayed version of itself. One formulation of the autocorrelation function, adapted from the Pearson correlation coefficient, is given by the following formula:
-\begin{quote}
-    Given a signal $y$ and a window size $N \in \mathbb N^\ast$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$ with $\mu_{y_i}$ as its mean.
-    
-    The autocorrelation of a signal with its version delayed by a shift of $k$ is defined as:
-    \begin{align*}
-        r\left(k\right)
-        &= \frac{\text{Cov}\left(y_n, y_{n-k}\right)}{\text{Var}\left(y_n\right)} \\
-        &= \frac{\sum_{n=k+1}^N \left(y_n - \mu_{y_n}\right) \left(y_{n-k} - \mu_{y_{n-k}}\right)}{\sum_n \left(y_n - \mu_{y_n}\right)^2}
-    \end{align*}
-\end{quote}
-Given the sampling rate $f_s$, the non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
-$$f_0 = \frac{f_s}{\argmin_{k}\left\{ r\left(k\right) : k \in \mathbb N^\ast \right\}}$$
-While this method yielded better results, it was nonetheless limited in handling real audio recordings. The results were very sensitive to hyperparameter choices such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
-
-%% PYIN
-
 The PYIN algorithm \autocite{PYIN:2014} is robust on real audio and has a readily available implementation in the librosa library\footnote{\href{https://librosa.org/doc/0.11.0/generated/librosa.pyin.html}{librosa.org/doc/0.11.0/generated/librosa.pyin.html}}, which allowed us to focus on the higher-level aspects of our project. PYIN is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to handle audio more robustly. At a high level, PYIN applies autocorrelation to detect pitch candidates and refines the result using a probabilistic thresholding model to filter out spurious frequencies.
 
 After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in hertz across time. We then apply multiple pitch shifts by a few cents \footnote{A logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI pitch.

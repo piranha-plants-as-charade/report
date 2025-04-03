@@ -1,18 +1,55 @@
 \section{Discussion}
+\label{sec:discussion}
 
-[discussion]
+\subsection{Early Experiments}
+\label{sec:experiments}
 
-\begin{itemize}
-    \item Reflection of results
-    \item Lessons learned
-    \item Next steps
-    \begin{itemize}
-        \item Expanding to more styles
-        \begin{itemize}
-            \item HMM: transitions/observations can be learned from data
-        \end{itemize}
-        \item Proposal for how to improve the pitch-shifting system?
-        \item Faster alternative to MIDI to WAV
-        \item Any ideas for improving melody extraction
-    \end{itemize}
-\end{itemize}
+\subsubsection{Cepstrum Analysis}
+
+Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
+$$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
+The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
+$$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
+However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
+
+\subsubsection{Autocorrelation}
+
+Another method we explored for pitch detection was autocorrelation. The idea is to find the periodicity of the signal by comparing it to a delayed version of itself. One formulation of the autocorrelation function, adapted from the Pearson correlation coefficient, is given by the following formula:
+\begin{quote}
+    Given a signal $y$ and a window size $N \in \mathbb N^\ast$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$ with $\mu_{y_i}$ as its mean.
+
+    The autocorrelation of a signal with its version delayed by a shift of $k$ is defined as:
+    \begin{align*}
+        r\left(k\right)
+        &= \frac{\text{Cov}\left(y_n, y_{n-k}\right)}{\text{Var}\left(y_n\right)} \\
+        &= \frac{\sum_{n=k+1}^N \left(y_n - \mu_{y_n}\right) \left(y_{n-k} - \mu_{y_{n-k}}\right)}{\sum_n \left(y_n - \mu_{y_n}\right)^2}
+    \end{align*}
+\end{quote}
+Given the sampling rate $f_s$, the non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
+$$f_0 = \frac{f_s}{\argmin_{k}\left\{ r\left(k\right) : k \in \mathbb N^\ast \right\}}$$
+While this method yielded better results, it was nonetheless limited in handling real audio recordings. The results were very sensitive to hyperparameter choices such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
+
+\subsubsection{Finite State Machine Chord Generation}
+
+\subsection{Avenues for Future Work}
+\label{sec:avenues}
+
+\subsubsection{Relax MVP Assumptions}
+
+The current implementation of Piranha Plants as Charade is a proof-of-concept that demonstrates the feasibility of our approach. However, it is limited by the assumptions we made in order to simplify the problem. For example, we assume that the input melody is played at 110 BPM, which is the tempo of the original song. Moving forward, we would like to relax this assumption and allow for arbitrary tempos. This would require us to implement a more sophisticated melody extraction algorithm that can handle varying tempos. There are existing methods to identify the beat and infer the tempo, such as BeatNet \cite{BeatNet:2021}.
+
+\subsubsection{Improving Melody Extraction}
+
+\subsubsection{Expanding to Additional Styles}
+
+In the current implementation, the chord progression we generate is determined by the observation and transition models that we define by hand. These capture the cohesiveness of a melody and a chord, and preferences for how to transition between chords respectively. For the purposes of this MVP, we have only implemented the style of ``Piranha Plants on Parade'' by specifying a particular instance of the transition and observation models. However, we can easily expand this to other styles by defining new transition and observation models according to different harmonic patterns.
+
+However, defining the transition and observation models by hand is a tedious process that requires a deep understanding of music theory. A more scalable approach would be to use a data-driven approach to learn the transition and observation models from a corpus of music. This would allow us to tailor the models to a specific style of music programmatically. It is worth noting that a bottleneck for this approach is the availability of data, as it would require a melody and the corresponding chord progression aligned with it.
+
+\subsubsection{Real-Time Processing}
+
+One interesting expansion of Piranha Plants as Charade is to implement real-time processing of audio input. This would allow for a more interactive free-style experience, where users can sing or play along with a generated harmony. However, one fundamental flaw of our current approach is that our chord generation algorithm assumes we have access to the full melody to predict the entire chord sequence together. This is not the case in real-time processing, where we only have access to the melody up to the current time step. Thus, we would need to pivot to a different approach to chord generation that can predict the next chord based on the current melody, and it must be able to do so in real-time.
+
+One approach building upon our current work is to process each time step independently, applying the transition and observation models once to determine the next chord. However, this is a greedy approach and it would not be able to capture the long-term dependencies of the melody.
+
+\subsubsection{Optimizing MIDI to WAV Conversion}
