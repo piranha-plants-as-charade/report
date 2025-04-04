@@ -1,12 +1,5 @@
 \section{System Overview}
 
-\begin{figure*}
-    \begin{center}
-        \resizebox{\linewidth}{!}{\input{figures/architecture.tex}}
-    \end{center}
-    \caption{An overview of the architecture of Piranha Plants as Charade.}
-    \label{fig:architecture}
-\end{figure*}
 Given an input melody in the form of a digital signal, we developed a music generation algorithm that transforms the input with these steps: 1) extract the melodic information from the input; 2) generate a chord progression that fits under both the extracted melody and the appropriate stylistic conventions; 3) generate a musical accompaniment based on the melody and chord progression; and 4) export the generated accompaniment as a WAV file (see Figure \ref{fig:architecture}).
 
 \input{sections/02a_melody_extraction.tex}

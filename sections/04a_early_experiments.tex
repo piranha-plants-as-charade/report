@@ -1,0 +1,37 @@
+\subsection{Early Experiments}
+\label{sec:experiments}
+
+\subsubsection{Cepstrum Analysis}
+
+Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
+$$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
+The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
+$$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
+However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
+
+\subsubsection{Autocorrelation}
+
+Another method we explored for pitch detection was autocorrelation. The idea is to find the periodicity of the signal by comparing it to a delayed version of itself. One formulation of the autocorrelation function, adapted from the Pearson correlation coefficient, is given by the following formula:
+\begin{quote}
+    Given a signal $y$ and a window size $N \in \mathbb N^\ast$, let $y_i$ be a subsequence of $y$ of length $N$ starting at index $i$ with $\mu_{y_i}$ as its mean.
+
+    The autocorrelation of a signal with its version delayed by a shift of $k$ is defined as:
+    \begin{align*}
+        r\left(k\right)
+        &= \frac{\text{Cov}\left(y_n, y_{n-k}\right)}{\text{Var}\left(y_n\right)} \\
+        &= \frac{\sum_{n=k+1}^N \left(y_n - \mu_{y_n}\right) \left(y_{n-k} - \mu_{y_{n-k}}\right)}{\sum_n \left(y_n - \mu_{y_n}\right)^2}
+    \end{align*}
+\end{quote}
+Given the sampling rate $f_s$, the non-zero shift with the highest correlation between signals corresponds to the signal's fundamental frequency:
+$$f_0 = \frac{f_s}{\argmin_{k}\left\{ r\left(k\right) : k \in \mathbb N^\ast \right\}}$$
+While this method yielded better results, it was nonetheless limited in handling real audio recordings. The results were very sensitive to hyperparameter choices such as the window size and correlation thresholds. Nevertheless, this served as an interesting exploration into a method that is the foundation for PYIN, the algorithm we decided to use.
+
+\subsubsection{Finite State Machine Chord Generation}
+
+Our first approach to chord generation was to use a finite state machine (FSM) to model the transitions between chords. The FSM is defined by a set of states, representing chords, and a set of transitions, representing the possible transitions between chords. This approach would require us to define transitions individually for each chord, which is a tedious process. Thus, we decided to proceed with the Hidden Markov Model, which allows us to define transitions more easily within two structures: the observation matrix and the transition matrix.
+
+The FSM approach lends itself to the possibility of integrating Large Language Model (LLM) agents, which use FSM-like models to define the decision-making process. However, given our limited testing, LLMs are not able to produce meaningful results when asked to predict the next chord in a sequence given the melody.
+
+\subsubsection{Voice Sample Library}
+
+To generate the vocal parts of our song, we used a custom library of voice samples from the video game \emph{Animal Crossing: New Horizons}. To prepare the library, we needed to pitch-shift the available samples to each note in the scale. Our original attempt used stock DSP algorithms from librosa and other audio processing libraries, but the vocal qualities would become distorted beyond recognition for large shifts. Next, we experimented with formant\footnote{The audio characteristics of spoken sounds.}-preservation techniques, but the results were unsatisfactory due to robotic-sounding artifacts. In the end, we turned to the closed-source software Melodyne to carry on with our MVP. Although we were not able to implement a satisfactory pitch-shifting algorithm, such techniques evidently exist.
