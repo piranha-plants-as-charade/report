@@ -3,11 +3,7 @@
 
 Our implementation of Piranha Plants as Charade can successfully take an audio file of the melody as input and generate an audio file of the song in the style of ``Piranha Plants on Parade''. The generated output contains the melody and a harmony line sung by synthesized vocals, as well as accompanying piano and percussion parts. A collection of sample inputs and outputs is available in our public results repository (See Appendix \ref{sec:code}).
 
-To evaluate the performance of our system, we conducted a qualitative analysis of the generated audio files. We compared the generated output to the original song, ``Piranha Plants on Parade'', and assessed the following aspects:
-\begin{enumerate}
-    \item \textbf{Accuracy of the melody}: we compared the generated melody to the original melody and assessed how well it matches the original.
-    \item \textbf{Chord progression}: we assessed the generated chord progression's compatibility with the melody, as well as with the original chord progression.
-\end{enumerate}
+To evaluate the performance of our system, we conducted a qualitative analysis of the generated audio files. We compared the generated output to the original song, ``Piranha Plants on Parade'', and assessed the following aspects: 1) melody accuracy; and 2) chord progression accuracy.
 
 \subsection{Melody Extraction Results}
 \label{sec:melody_extraction_results}
@@ -34,7 +30,7 @@ Based on the piano data, there is a trend of input noise leading to less accurat
 \end{figure}
 As the first step for evaluating the chord progression generation efficacy, we ran Piranha Plants as Charade with a hard-coded excerpt from the melody of ``Piranha Plants on Parade'' and we compared the output chord progression to the respective original chord progression.
 
-Overall, the results are very good. The original and generated chords matched perfectly for 9/16 of the excerpt, and a similar chord was chosen for another 2/16 of the excerpt. The chord generation algorithm chooses a different chord only 5/16 of the time; in these cases, the chords chosen by our algorithm seem reasonable.
+Overall, the results are very good. The original and generated chords matched perfectly for 9/16 of the excerpt, and a similar chord was chosen for another 2/16 of the excerpt. The chord generation algorithm chooses a different chord only 5/16 of the time; in these cases, the chords chosen by our algorithm seem reasonable. Given that the chord progression generation depends on itself, deviations propagate, thus the output is more accurate than the raw numbers suggest.
 
 Given more time, we planned on running a survey to evaluate the chord progression generation on other melodies. We would have also attempted to find patterns in what melodic traits cause and/or correlate with better or worse chord progression generation.
 
