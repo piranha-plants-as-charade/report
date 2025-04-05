@@ -3,11 +3,11 @@
 
 \subsubsection{Cepstrum Analysis}
 
-Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
+Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consists of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
 $$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
 The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
 $$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
-However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
+However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using acoustic audio data.
 
 \subsubsection{Autocorrelation}
 
