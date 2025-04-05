@@ -33,7 +33,7 @@
         \node [component bottom center={Chord Generation}{teal}, fit=(viterbi)] {};
     \end{scope}
 
-    %% ACCOMPANIMENT GENERATION
+    %% ARRANGEMENT GENERATION
     \node (percussion) [block, above=of viterbi, yshift=1.75cm] {Percussion generator};
     \node (piano) [block, above=of percussion, yshift=1.9cm] {Piano generator};
     \node (voice) [block, above=of piano, yshift=1cm] {Voice generator};
@@ -52,7 +52,7 @@
     \draw [arrow] ($(melody ctx.east) + (0.4cm, 0)$) |- (voice);
 
     \begin{scope}[on background layer]
-        \node [component top center={Accompaniment Generation}{brown}, fit=(percussion) (piano) (voice)] {};
+        \node [component top center={Arrangement Generation}{brown}, fit=(percussion) (piano) (voice)] {};
     \end{scope}
 
     %% AUDIO EXPORT

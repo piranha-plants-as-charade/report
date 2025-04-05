@@ -3,11 +3,11 @@
 
 \subsubsection{Cepstrum Analysis}
 
-Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consist of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
+Our first attempt at pitch detection involved cepstrum analysis. Our input data consists of a sequence of tones, each of which consists of a fundamental frequency $f_0$ and harmonics $f_k = k f_0$ for all $k \geq 1$. Thus, we expect the presence of spikes at the multiples of $f_0$ in the Fourier domain. The idea of cepstrum is to identify this periodic pattern by applying the Fourier transform a second time. Formally, the cepstrum $C$ is defined on a signal $y$ as follows:
 $$C = \text{FFT}\left(\log\left|\text{FFT}\left(y\right)\right|\right)$$
 The fundamental frequency of the signal is at the first non-zero peak in the cepstrum:
 $$f_0 = \frac{1}{\argmax_{k} C\left[k\right]}$$
-However, this method is not robust to noise and did not perform reliably in our experiments \footnote{TODO: Link notebook here} using real audio recordings.
+However, this method is not robust to noise and did not perform reliably in our experiments (See Appendix \ref{sec:code}) using acoustic audio data.
 
 \subsubsection{Autocorrelation}
 
@@ -30,7 +30,7 @@ While this method yielded better results, it was nonetheless limited in handling
 
 Our first approach to chord generation was to use a finite state machine (FSM) to model the transitions between chords. The FSM is defined by a set of states, representing chords, and a set of transitions, representing the possible transitions between chords. This approach would require us to define transitions individually for each chord, which is a tedious process. Thus, we decided to proceed with a hidden Markov model approach, which allows us to define transitions more easily within two structures: the observation matrix and the transition matrix.
 
-The FSM approach lends itself to the possibility of integrating Large Language Model (LLM) agents, which use FSM-like models to define the decision-making process. However, given our limited testing, LLMs are not able to produce meaningful results when asked to predict the next chord in a sequence given the melody.
+The FSM approach lends itself to the possibility of integrating large language model (LLM) agents, which use FSM-like models to define the decision-making process. However, given our limited testing, LLMs are not able to produce meaningful results when asked to predict the next chord in a sequence given the melody.
 
 \subsubsection{Voice Sample Library}
 

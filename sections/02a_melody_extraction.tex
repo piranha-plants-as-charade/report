@@ -1,23 +1,21 @@
 \subsection{Melody Extraction}
 \label{sec:melody_extraction}
 
-The first step in Piranha Plants as Charade is to extract the melody from the input audio. The goal of this section is to take an audio file and output a sequence of notes, each with a MIDI pitch, start time, and duration. This problem can be broken down into two subproblems: pitch detection and note segmentation.
+The first step in Piranha Plants as Charade is to extract the melody from the input audio. The goal of this section is to accept an input audio file and output a sequence of notes, each with a MIDI pitch, start time, and duration. This problem can be broken down into two subproblems: pitch detection and note segmentation.
 
-As a pre-processing step, we first apply the Harmonic-Percussive Source Separation (HPSS) algorithm \autocite{HPSS:2010,HPSS:2014} to separate the harmonic and percussive components of the audio signal. We perform pitch detection on the harmonic component and use the percussive component to identify the timestamps where notes start, which we refer to as note onsets. Finally, we combine both components to produce the final sequence of notes.
+As a pre-processing step, we first apply the Harmonic-Percussive Source Separation (HPSS) algorithm \autocite{HPSS:2010,HPSS:2014} to separate the harmonic and percussive components of the audio signal. We perform pitch detection on the harmonic component and use the percussive component to identify the timestamps where notes start, which we refer to as note onsets. Finally, we combine both components to produce a sequence of notes to define the melody.
 
 \subsubsection{Pitch Detection}
 
-This problem determines the fundamental frequency of a sound; we aim to produce a sequence of MIDI pitches that correspond to notes in the melody. We explored a few different approaches, starting with cepstrum analysis and autocorrelation. However, these methods failed to handle the complexity of imperfect audio. We elaborate more upon this in Section \ref{sec:avenues}. We decided to use the PYIN algorithm as implemented in the librosa library, which is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to detect pitches more robustly.
+This problem determines the fundamental frequency of a sound. We aim to produce a sequence of MIDI pitches that correspond to notes in the melody. We explored a few different approaches, starting with cepstrum analysis and autocorrelation. However, these methods failed to handle the complexity of imperfect audio. We elaborate more upon this in Section \ref{sec:avenues}. We decided to use the PYIN algorithm \autocite{PYIN:2014} as implemented in the librosa\footnote{\url{https://librosa.org/doc/0.11.0/generated/librosa.pyin.html}} library, a state-of-the-art pitch detection algorithm that builds upon autocorrelation to detect pitches more robustly.
 
-The PYIN algorithm \autocite{PYIN:2014} is robust on imperfect audio and has a readily available implementation in the librosa library\footnote{\href{https://librosa.org/doc/0.11.0/generated/librosa.pyin.html}{librosa.org/doc/0.11.0/generated/librosa.pyin.html}}, which allowed us to focus on the higher-level aspects of our project. PYIN is a state-of-the-art pitch detection algorithm that builds upon autocorrelation to handle audio more robustly. At a high level, PYIN applies autocorrelation to detect pitch candidates and refines the result using a probabilistic thresholding model to filter out spurious frequencies.
-
-After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in hertz across time. We then apply multiple pitch shifts by a few cents \footnote{A logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI pitch.
+The PYIN algorithm is a state-of-the-art pitch detection algorithm that applies autocorrelation to detect pitch candidates and refines the result using a probabilistic thresholding model to filter out spurious frequencies. It is robust on imperfect audio, and has a readily available implementation in the librosa library. After applying PYIN to the harmonic component of the audio signal, we have the estimated pitch in hertz across time. We then apply multiple pitch shifts by a few cents\footnote{A logarithmic unit representing a hundredth of a semitone.} to find the best match, determined by the lowest error after rounding to the nearest MIDI pitch.
 
 \subsubsection{Note Segmentation}
 
 Once we have the pitch sequence, it must be segmented into individual notes. To do this, we count quantized time units from the start of the first identified pitch at the assumed tempo of the song. Within each interval, we take the mode of the pitches as the pitch at that time. We end the previous note and begin a new one if either of the following conditions are met:
 \begin{enumerate}
-    \item The pitch changes from the previous interval.
+    \item The pitch changes from the previous time step.
     \item An onset is detected in the percussive component of the audio at the corresponding time.
 \end{enumerate}
 Thus, we obtain a sequence of notes defining the melody to pass to the next component.
