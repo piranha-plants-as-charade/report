@@ -1,9 +1,9 @@
 \subsection{Chord Generation}
 \label{sec:chord_generation}
 
-The next step in Piranha Plants as Charade is to generate the `best' chord progression\footnote{A sequence of chords.} for the extracted melody from Part \ref{sec:melody_extraction}. It is generally quite open-ended and subjective whether a chord progression `sounds good' with a melody, and there can be many different appropriate chord progressions that evoke different emotions and styles. For this project, we define `appropriate` to mean in adherance with the style of Piranha Plants. We use a first-order Hidden Markov Model (HMM) framework to determine the most appropriate chord progression.
+The next step in Piranha Plants as Charade is to generate the `best' chord progression\footnote{A sequence of chords.} for the extracted melody from Part \ref{sec:melody_extraction}. It is generally quite open-ended and subjective whether a chord progression `sounds good' with a melody, and there can be many different appropriate chord progressions that evoke different emotions and styles. For this project, we define `appropriate` to mean in adherance with the style of Piranha Plants. We use a first-order hidden Markov model (HMM) framework to determine the most appropriate chord progression.
 
-The Hidden Markov Model \autocite{HMM:2023,SpeechLang:2025}, depicted in Figure \ref{fig:hmm}, is a statistical model that describes a sequence of hidden states, each of which emits an observation. In the context of chord generation, we model the hidden states as the sequence of chords and the observations as a function of the melody. The HMM framework allows us to model the probability of a chord sequence given a melody, which we can then use to generate the most likely or most favorable sequence of chords.
+The hidden Markov model \autocite{HMM:2023,SpeechLang:2025}, depicted in Figure \ref{fig:hmm}, is a statistical model that describes a sequence of hidden states, each of which emits an observation. In the context of chord generation, we model the hidden states as the sequence of chords and the observations as a function of the melody. The HMM framework allows us to model the probability of a chord sequence given a melody, which we can then use to generate the most likely or most favorable sequence of chords.
 
 The model consists of the following components for time step $t \geq 0$:
 \begin{itemize}
@@ -16,7 +16,7 @@ The model consists of the following components for time step $t \geq 0$:
 
 \begin{figure}
     \resizebox{\linewidth}{!}{\input{figures/hmm.tex}}
-    \caption{Hidden Markov Model for chord generation.}
+    \caption{Hidden Markov model for chord generation.}
     \label{fig:hmm}
 \end{figure}
 
