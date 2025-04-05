@@ -11,7 +11,7 @@ We also assume that the key is C major, to simplify the chord generation process
 
 \subsubsection{Improving Melody Extraction}
 
-TODO: summarize insights from results, mention that the current method does not work for real recordings.
+Given a simple synthetic melody within our MVP scope, our current implementation of melody extraction works suffiently well; however, it is not robust enough for recorded audio data. In particular, it does not handle noise well, and often has trouble accurately identifying articulations in the melody. Since our onset detection implementation seems to be the source of the most errors, a key point for future work is to refine this step of the pipeline.
 
 \subsubsection{Expanding to Additional Styles}
 
@@ -31,6 +31,4 @@ One approach building upon our current work is to process each time step indepen
 
 We also had the opportunity to discuss our project with Professor Kate Larson, who mentioned a recent paper using reinforcement learning for real-time interactive jamming \autocite{ReaLJam:2025}. Although this is outside the scope of our project and knowledge to discuss in detail, it would be an interesting avenue to explore as we consider real-time processing.
 
-\subsubsection{Optimizing MIDI to WAV Conversion}
-
-TODO:
+% \subsubsection{Optimizing MIDI to WAV Conversion}
